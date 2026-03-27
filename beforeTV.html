@@ -1,0 +1,1032 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BeforeTV — Guarda Prima degli Altri</title>
+<link rel="icon" type="image/png" href="icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c28;
+    --accent: #e8ff00;
+    --accent2: #ff3cac;
+    --accent3: #3cf;
+    --text: #f0f0f5;
+    --text-muted: #7a7a8e;
+    --radius: 10px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; overflow-x: hidden; cursor: default; }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 48px;
+    background: linear-gradient(to bottom, rgba(10,10,15,0.98), transparent);
+    backdrop-filter: blur(4px);
+  }
+  .logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 2px; color: var(--accent); text-shadow: 0 0 30px rgba(232,255,0,0.4); user-select: none; }
+  .logo span { color: var(--text); }
+  nav ul { display: flex; gap: 32px; list-style: none; }
+  nav ul a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; font-weight: 500; letter-spacing: 0.5px; transition: color 0.2s; }
+  nav ul a:hover { color: var(--accent); }
+  .nav-cta { background: var(--accent); color: #000 !important; padding: 8px 20px; border-radius: 50px; font-weight: 700 !important; transition: transform 0.2s, box-shadow 0.2s !important; }
+  .nav-cta:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(232,255,0,0.4); color: #000 !important; }
+
+  .hero { position: relative; min-height: 100vh; display: flex; align-items: center; padding: 0 48px; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 50%, rgba(255,60,172,0.15) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(51,204,255,0.1) 0%, transparent 50%), radial-gradient(ellipse at 90% 10%, rgba(232,255,0,0.08) 0%, transparent 40%); }
+  .hero-grid { position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 60px 60px; mask-image: linear-gradient(to bottom, transparent 0%, black 30%, black 70%, transparent 100%); }
+  .hero-content { position: relative; z-index: 2; max-width: 680px; }
+  .hero-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(232,255,0,0.1); border: 1px solid rgba(232,255,0,0.3); color: var(--accent); font-size: 0.75rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase; padding: 6px 14px; border-radius: 50px; margin-top: 80px; margin-bottom: 24px; animation: fadeUp 0.6s ease both; }
+  .hero-badge::before { content: ''; width: 6px; height: 6px; background: var(--accent); border-radius: 50%; animation: pulse 1.5s infinite; }
+  @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(0.7); } }
+  .hero h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(4rem, 9vw, 8rem); line-height: 0.95; letter-spacing: 2px; margin-bottom: 24px; animation: fadeUp 0.6s 0.1s ease both; }
+  .hero h1 .highlight { -webkit-text-stroke: 2px var(--accent); color: transparent; display: block; }
+  .hero p { font-size: 1.1rem; color: var(--text-muted); line-height: 1.7; max-width: 480px; margin-bottom: 36px; animation: fadeUp 0.6s 0.2s ease both; }
+  .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; animation: fadeUp 0.6s 0.3s ease both; }
+  .btn-primary { background: var(--accent); color: #000; padding: 14px 32px; border-radius: 50px; font-weight: 700; font-size: 0.95rem; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s, box-shadow 0.2s; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(232,255,0,0.3); }
+  .btn-secondary { background: transparent; color: var(--text); padding: 14px 32px; border-radius: 50px; font-weight: 500; font-size: 0.95rem; text-decoration: none; border: 1px solid rgba(255,255,255,0.15); display: inline-flex; align-items: center; gap: 8px; transition: border-color 0.2s, background 0.2s; }
+  .btn-secondary:hover { border-color: var(--accent); background: rgba(232,255,0,0.06); }
+  .hero-visual { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); width: 520px; opacity: 0.9; animation: floatIn 0.8s 0.3s ease both; }
+  @keyframes floatIn { from { opacity: 0; transform: translateY(-40%) translateX(40px); } to { opacity: 0.9; transform: translateY(-50%) translateX(0); } }
+  .hero-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; transform: perspective(800px) rotateY(-10deg) rotateX(4deg); }
+  .hero-card { border-radius: var(--radius); overflow: hidden; aspect-ratio: 16/10; position: relative; background: var(--surface2); }
+  .hero-card:nth-child(1) { background: linear-gradient(135deg, #1a1a2e, #16213e); }
+  .hero-card:nth-child(2) { background: linear-gradient(135deg, #1a0a2e, #2e0a1e); margin-top: -24px; }
+  .hero-card:nth-child(3) { background: linear-gradient(135deg, #0a1a2e, #0a2e1a); margin-top: 24px; }
+  .hero-card:nth-child(4) { background: linear-gradient(135deg, #2e1a0a, #1a2e0a); }
+  .hero-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%);
+}
+
+/* Card 1 */
+.hero-card:nth-child(1)::after {
+  background:
+    linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%),
+    url("imgs/herocards/serie.avif") center/cover no-repeat;
+}
+
+/* Card 2 */
+.hero-card:nth-child(2)::after {
+  background:
+    linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%),
+    url("imgs/herocards/film.webp") center/cover no-repeat;
+}
+
+/* Card 3 */
+.hero-card:nth-child(3)::after {
+  background:
+    linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%),
+    url("imgs/herocards/sport.jpg") center/cover no-repeat;
+}
+
+/* Card 4 */
+.hero-card:nth-child(4)::after {
+  background:
+    linear-gradient(to top, rgba(0,0,0,0.8), transparent 60%),
+    url("imgs/herocards/cultura.png") center/cover no-repeat;
+}
+  .hero-card-label { position: absolute; bottom: 10px; left: 12px; z-index: 1; font-size: 0.7rem; font-weight: 600; color: rgba(255,255,255,0.7); letter-spacing: 1px; text-transform: uppercase; }
+  .hero-card-badge { position: absolute; top: 10px; right: 10px; z-index: 1; background: var(--accent); color: #000; font-size: 0.55rem; font-weight: 700; padding: 3px 8px; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px; }
+
+  .plans { padding: 100px 48px; position: relative; }
+  .section-header { text-align: center; margin-bottom: 60px; }
+  .section-tag { display: inline-block; font-size: 0.75rem; font-weight: 600; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 5vw, 4.5rem); letter-spacing: 1px; line-height: 1; }
+  .plans-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; max-width: 1100px; margin: 0 auto; }
+  .plan-card { background: var(--surface); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; padding: 36px 28px; position: relative; transition: transform 0.3s, border-color 0.3s; overflow: hidden; }
+  .plan-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: var(--accent2); opacity: 0; transition: opacity 0.3s; }
+  .plan-card.featured::before { opacity: 1; background: var(--accent); }
+  .plan-card:hover { transform: translateY(-6px); border-color: rgba(255,255,255,0.15); }
+  .plan-card.featured { border-color: rgba(232,255,0,0.2); background: linear-gradient(135deg, #13131a, #1a1a10); }
+  .featured-badge { position: absolute; top: 20px; right: 20px; background: var(--accent); color: #000; font-size: 0.65rem; font-weight: 700; padding: 4px 10px; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px; }
+  .plan-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.8rem; letter-spacing: 1px; margin-bottom: 8px; color: var(--text-muted); }
+  .plan-card.featured .plan-name { color: var(--accent); }
+  .plan-price { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; line-height: 1; margin-bottom: 4px; }
+  .plan-price sup { font-family: 'DM Sans', sans-serif; font-size: 1rem; font-weight: 600; vertical-align: super; margin-right: 2px; }
+  .plan-period { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 28px; }
+  .plan-divider { height: 1px; background: rgba(255,255,255,0.07); margin-bottom: 24px; }
+  .plan-features { list-style: none; display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+  .plan-features li { display: flex; align-items: center; gap: 10px; font-size: 0.88rem; color: var(--text-muted); }
+  .plan-features li .check { width: 18px; height: 18px; border-radius: 50%; background: rgba(232,255,0,0.12); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; flex-shrink: 0; }
+  .plan-features li.active { color: var(--text); }
+  .btn-plan { display: block; text-align: center; padding: 13px; border-radius: 50px; font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: all 0.2s; border: 1px solid rgba(255,255,255,0.15); color: var(--text); }
+  .plan-card.featured .btn-plan { background: var(--accent); color: #000; border-color: transparent; }
+  .plan-card.featured .btn-plan:hover { box-shadow: 0 8px 30px rgba(232,255,0,0.3); transform: scale(1.02); }
+  .btn-plan:hover { border-color: var(--accent); color: var(--accent); }
+
+  .categories { padding: 60px 48px 100px; }
+  .cats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; max-width: 1100px; margin: 0 auto; }
+  .cat-card { border-radius: 14px; padding: 32px 24px; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.3s; min-height: 160px; display: flex; flex-direction: column; justify-content: flex-end; }
+  .cat-card:hover { transform: scale(1.03); }
+  .cat-card:nth-child(1) { background: linear-gradient(135deg, #0d2137, #1a3a5c); }
+  .cat-card:nth-child(2) { background: linear-gradient(135deg, #1a0a2a, #3a1060); }
+  .cat-card:nth-child(3) { background: linear-gradient(135deg, #1a2a0a, #2a4a10); }
+  .cat-card:nth-child(4) { background: linear-gradient(135deg, #2a1a0a, #4a2a10); }
+  .cat-icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+  .cat-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 1px; margin-bottom: 4px; }
+  .cat-count { font-size: 0.75rem; color: rgba(255,255,255,0.5); letter-spacing: 1px; }
+  .cat-card::after { content: '→'; position: absolute; top: 20px; right: 20px; font-size: 1.2rem; opacity: 0; transform: translateX(-8px); transition: all 0.3s; }
+  .cat-card:hover::after { opacity: 1; transform: translateX(0); }
+
+  .marquee-section { overflow: hidden; padding: 24px 0; border-top: 1px solid rgba(255,255,255,0.05); border-bottom: 1px solid rgba(255,255,255,0.05); background: var(--surface); margin-bottom: 80px; }
+  .marquee-track { display: flex; gap: 48px; animation: marquee 20s linear infinite; width: max-content; }
+  .marquee-item { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 3px; color: var(--text-muted); white-space: nowrap; display: flex; align-items: center; gap: 48px; }
+  .marquee-item::after { content: '◆'; color: var(--accent); font-size: 0.6rem; }
+  @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  footer { padding: 60px 48px 32px; border-top: 1px solid rgba(255,255,255,0.06); }
+  .footer-top { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; margin-bottom: 48px; }
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 2.2rem; color: var(--accent); letter-spacing: 2px; margin-bottom: 12px; }
+  .footer-logo span { color: var(--text); }
+  .footer-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; max-width: 280px; }
+  .footer-col h4 { font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-col ul li a { font-size: 0.85rem; color: var(--text-muted); text-decoration: none; transition: color 0.2s; }
+  .footer-col ul li a:hover { color: var(--text); }
+  .footer-bottom { display: flex; align-items: center; justify-content: space-between; padding-top: 24px; border-top: 1px solid rgba(255,255,255,0.05); font-size: 0.8rem; color: var(--text-muted); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+  .page { display: none; }
+  .page.active { display: block; animation: pageFadeIn 0.5s ease both; }
+  .page.exit { animation: pageFadeOut 0.25s ease forwards; }
+  @keyframes pageFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes pageFadeOut { from { opacity: 1; } to { opacity: 0; } }
+  .active-nav { color: var(--accent) !important; }
+
+  .films-page { padding-top: 100px; min-height: 100vh; }
+  .films-hero { position: relative; padding: 60px 48px 48px; overflow: hidden; }
+  .films-hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 30% 50%, rgba(232,255,0,0.07) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(255,60,172,0.1) 0%, transparent 50%); }
+  .films-hero-content { position: relative; z-index: 1; }
+
+  .sport-stats-bar { display: flex; align-items: center; justify-content: center; gap: 0; padding: 28px 48px; background: var(--surface); border-bottom: 1px solid rgba(255,255,255,0.06); flex-wrap: wrap; }
+  .sport-stat { display: flex; flex-direction: column; align-items: center; padding: 0 48px; }
+  .sport-stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; color: var(--accent); line-height: 1; }
+  .sport-stat-label { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.08em; }
+  .sport-stat-divider { width: 1px; height: 48px; background: rgba(255,255,255,0.1); }
+  .sport-section-title { padding: 32px 48px 8px; font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.05em; color: var(--text); }
+
+  .live-now-bar { display: flex; gap: 16px; padding: 0 48px 24px; flex-wrap: wrap; }
+  .live-event-card { border: 1px solid rgba(255,60,60,0.3); border-radius: 14px; min-width: 240px; flex: 1; max-width: 340px; position: relative; overflow: hidden; cursor: pointer; transition: transform 0.2s, border-color 0.2s; height: 130px; }
+  .live-event-card:hover { transform: translateY(-3px); border-color: rgba(255,60,60,0.6); }
+  .live-event-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, red, #ff6600); z-index: 2; }
+  .live-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,15,0.97) 0%, rgba(10,10,15,0.5) 100%); padding: 18px 24px; display: flex; flex-direction: column; justify-content: flex-end; z-index: 1; }
+  .live-dot { display: inline-flex; align-items: center; gap: 6px; font-size: 0.65rem; font-weight: 700; color: #ff4444; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; }
+  .live-dot::before { content: ''; width: 7px; height: 7px; background: #ff4444; border-radius: 50%; animation: pulse 1s infinite; }
+  .live-event-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; letter-spacing: 1px; margin-bottom: 4px; }
+  .live-event-meta { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; justify-content: space-between; }
+  .live-event-time { background: rgba(255,60,60,0.15); color: #ff8888; padding: 2px 8px; border-radius: 50px; font-size: 0.7rem; font-weight: 600; }
+
+  .schedule-strip { display: flex; gap: 10px; padding: 0 48px 16px; overflow-x: auto; scrollbar-width: none; }
+  .schedule-strip::-webkit-scrollbar { display: none; }
+  .schedule-slot { background-color: var(--surface); border: 1px solid rgba(255,255,255,0.07); border-radius: 12px; padding: 14px 20px; min-width: 220px; min-height: 110px; flex-shrink: 0; transition: border-color 0.2s; cursor: pointer; display: flex; flex-direction: column; justify-content: flex-end; position: relative; overflow: hidden; }
+  .schedule-slot:hover { border-color: rgba(232,255,0,0.3); }
+  .schedule-slot.next { border-color: rgba(232,255,0,0.2); }
+  .schedule-time { font-family: 'Bebas Neue', sans-serif; font-size: 1.1rem; color: var(--accent); margin-bottom: 4px; }
+  .schedule-name { font-size: 0.78rem; font-weight: 600; color: var(--text); margin-bottom: 2px; }
+  .schedule-sport { font-size: 0.68rem; color: var(--text-muted); }
+
+  .films-breadcrumb { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+  .films-breadcrumb span { color: var(--accent); cursor: pointer; }
+  .films-breadcrumb span:hover { text-decoration: underline; }
+  .films-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(3rem, 7vw, 6rem); letter-spacing: 2px; line-height: 1; margin-bottom: 12px; }
+  .films-title em { font-style: normal; -webkit-text-stroke: 2px var(--accent); color: transparent; }
+  .films-subtitle { color: var(--text-muted); font-size: 1rem; margin-bottom: 36px; }
+
+  .filter-bar { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; padding: 32px 48px 40px; }
+  .filter-btn { background: var(--surface); border: 1px solid rgba(255,255,255,0.08); color: var(--text-muted); padding: 8px 18px; border-radius: 50px; font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .filter-btn:hover, .filter-btn.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 700; }
+
+  .featured-film { margin: 0 48px 56px; border-radius: 20px; overflow: hidden; position: relative; height: 380px; background: var(--surface2); cursor: pointer; transition: transform 0.3s; }
+  .featured-film:hover { transform: scale(1.005); }
+  .featured-film-img { width: 100%; height: 100%; object-fit: cover; opacity: 0.5; transition: opacity 0.3s; }
+  .featured-film:hover .featured-film-img { opacity: 0.65; }
+  .featured-film-overlay { position: absolute; inset: 0; background: linear-gradient(to right, rgba(10,10,15,0.95) 40%, transparent 80%); display: flex; align-items: center; padding: 48px; }
+  .featured-film-info { max-width: 480px; }
+  .featured-tag { display: inline-block; background: var(--accent); color: #000; font-size: 0.65rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; padding: 4px 12px; border-radius: 50px; margin-bottom: 16px; }
+  .featured-film-title { font-family: 'Bebas Neue', sans-serif; font-size: 3.5rem; letter-spacing: 2px; line-height: 1; margin-bottom: 12px; }
+  .featured-film-meta { display: flex; align-items: center; gap: 16px; font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px; }
+  .meta-dot { width: 4px; height: 4px; background: var(--text-muted); border-radius: 50%; }
+  .featured-film-desc { font-size: 0.9rem; color: rgba(255,255,255,0.65); line-height: 1.6; margin-bottom: 28px; }
+  .featured-btns { display: flex; gap: 12px; }
+  .btn-watch { background: var(--accent); color: #000; padding: 12px 28px; border-radius: 50px; font-weight: 700; font-size: 0.9rem; border: none; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: transform 0.2s, box-shadow 0.2s; font-family: 'DM Sans', sans-serif; }
+  .btn-watch:hover { transform: scale(1.04); box-shadow: 0 8px 30px rgba(232,255,0,0.35); }
+  .btn-more { background: rgba(255,255,255,0.08); color: var(--text); padding: 12px 24px; border-radius: 50px; font-weight: 500; font-size: 0.9rem; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .btn-more:hover { background: rgba(255,255,255,0.14); }
+
+  .films-section { padding: 0 48px 80px; }
+  .films-section-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 1px; margin-bottom: 24px; color: var(--text-muted); display: flex; align-items: center; gap: 12px; }
+  .films-section-title::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.06); }
+
+  .films-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
+  .film-card { position: relative; border-radius: 12px; overflow: hidden; cursor: pointer; transition: transform 0.3s; background: var(--surface2); aspect-ratio: 16/9; }
+  .film-card:hover { transform: translateY(-6px) scale(1.02); z-index: 2; }
+  .film-card img { width: 100%; height: 100%; object-fit: cover; display: block; transition: filter 0.3s; }
+  .film-card:hover img { filter: brightness(0.5); }
+  .film-card-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,10,15,0.95) 0%, transparent 55%); display: flex; flex-direction: column; justify-content: flex-end; padding: 14px 12px; }
+  .film-card-hover { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s; flex-direction: column; gap: 10px; padding: 16px; }
+  .film-card:hover .film-card-hover { opacity: 1; }
+  .play-btn { width: 52px; height: 52px; background: var(--accent); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; color: #000; transition: transform 0.2s; flex-shrink: 0; }
+  .play-btn:hover { transform: scale(1.1); }
+  .film-card-hover-title { font-size: 0.78rem; font-weight: 600; text-align: center; color: var(--text); line-height: 1.3; }
+  .film-title { font-size: 0.82rem; font-weight: 600; line-height: 1.3; margin-bottom: 4px; color: var(--text); }
+  .film-year { font-size: 0.72rem; color: var(--text-muted); }
+  .film-badge { position: absolute; top: 10px; left: 10px; background: var(--accent2); color: #fff; font-size: 0.58rem; font-weight: 700; padding: 3px 8px; border-radius: 50px; text-transform: uppercase; letter-spacing: 1px; }
+  .film-badge.new { background: var(--accent); color: #000; }
+  .film-badge.hd { background: rgba(51,204,255,0.9); color: #000; }
+
+  .film-modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; display: none; align-items: center; justify-content: center; backdrop-filter: blur(6px); }
+  .film-modal-backdrop.open { display: flex; }
+  .film-modal { background: var(--surface); border-radius: 20px; width: 90%; max-width: 680px; overflow: hidden; position: relative; animation: modalIn 0.3s ease; border: 1px solid rgba(255,255,255,0.08); }
+  @keyframes modalIn { from { opacity: 0; transform: scale(0.93) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+  .modal-img { width: 100%; height: 260px; object-fit: cover; display: block; }
+  .modal-gradient { position: absolute; top: 0; left: 0; right: 0; height: 260px; background: linear-gradient(to top, var(--surface) 0%, transparent 60%); }
+  .modal-body { padding: 24px 32px 32px; }
+  .modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 2.4rem; letter-spacing: 1px; margin-bottom: 8px; }
+  .modal-meta { display: flex; gap: 14px; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 16px; flex-wrap: wrap; }
+  .modal-meta span { display: flex; align-items: center; gap: 4px; }
+  .modal-desc { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.7; margin-bottom: 24px; }
+  .modal-actions { display: flex; gap: 12px; }
+  .modal-close { position: absolute; top: 16px; right: 16px; width: 36px; height: 36px; background: rgba(0,0,0,0.6); border: none; border-radius: 50%; color: var(--text); font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 1; transition: background 0.2s; }
+  .modal-close:hover { background: rgba(232,255,0,0.2); }
+
+  /* ─── FAQ STYLES ─── */
+  .faq-item { border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; margin-bottom: 12px; overflow: hidden; transition: border-color 0.2s; background: var(--surface); }
+  .faq-item:hover { border-color: rgba(232,255,0,0.2); }
+  .faq-item.open { border-color: rgba(232,255,0,0.35); }
+  .faq-question { display: flex; align-items: center; justify-content: space-between; padding: 22px 28px; cursor: pointer; gap: 16px; user-select: none; }
+  .faq-question-text { font-size: 1rem; font-weight: 600; color: var(--text); line-height: 1.4; }
+  .faq-item.open .faq-question-text { color: var(--accent); }
+  .faq-arrow { font-size: 1.1rem; color: var(--text-muted); transition: transform 0.3s; flex-shrink: 0; }
+  .faq-item.open .faq-arrow { transform: rotate(180deg); color: var(--accent); }
+  .faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.35s ease, padding 0.35s ease; padding: 0 28px; color: var(--text-muted); font-size: 0.92rem; line-height: 1.75; }
+  .faq-item.open .faq-answer { max-height: 400px; padding: 0 28px 24px; }
+  .faq-cat-badge { font-size: 0.62rem; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; padding: 3px 10px; border-radius: 50px; background: rgba(232,255,0,0.1); color: var(--accent); flex-shrink: 0; }
+  #faqSearch:focus { border-color: rgba(232,255,0,0.4) !important; }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    nav ul { display: none; }
+    .hero { padding: 120px 24px 60px; min-height: auto; }
+    .hero-visual { display: none; }
+    .plans { padding: 60px 24px; }
+    .plans-grid { grid-template-columns: 1fr; }
+    .categories { padding: 40px 24px 60px; }
+    .cats-grid { grid-template-columns: 1fr 1fr; }
+    .footer-top { grid-template-columns: 1fr 1fr; }
+    footer { padding: 40px 24px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- FILM MODAL -->
+<div class="film-modal-backdrop" id="filmModal">
+  <div class="film-modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <img src="" id="modalImg" class="modal-img" alt="">
+    <div class="modal-gradient"></div>
+    <div class="modal-body">
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-meta" id="modalMeta"></div>
+      <div class="modal-desc" id="modalDesc"></div>
+      <div class="modal-actions">
+        <button class="btn-watch">▶ Guarda ora</button>
+        <button class="btn-more">+ Lista</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">before<span>TV</span></div>
+  <ul>
+    <li><a href="#" onclick="showPage('home');return false;" id="nav-home" class="nav-link active-nav">Home</a></li>
+    <li><a href="#" onclick="showPage('films');return false;" id="nav-films" class="nav-link">Film</a></li>
+    <li><a href="#" onclick="showPage('serie');return false;" id="nav-serie" class="nav-link">Serie</a></li>
+    <li><a href="#" onclick="showPage('sport');return false;" id="nav-sport" class="nav-link">Sport</a></li>
+    <li><a href="#" onclick="showPage('documentari');return false;" id="nav-documentari" class="nav-link">Documentari</a></li>
+    <li><a href="#" onclick="showPage('faq');return false;" id="nav-faq" class="nav-link">FAQ</a></li>
+    <li><a href="#" class="nav-cta">Inizia ora</a></li>
+  </ul>
+</nav>
+
+<!-- HOME PAGE -->
+<div id="page-home" class="page active">
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-badge">Nuovo · Streaming Italiano</div>
+    <h1>Guarda<span class="highlight">Prima</span>degli altri</h1>
+    <p>Film, serie, sport e molto altro. Tutto in un unico abbonamento. Senza pubblicità, senza compromessi.</p>
+    <div class="hero-btns">
+      <a href="#" onclick="showPage('documentari');return false;" class="btn-primary">▶ Inizia Gratis</a>
+      <a href="#" onclick="showPage('films');return false;" class="btn-secondary">Esplora il catalogo</a>
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-cards">
+      <div class="hero-card"><span class="hero-card-badge">4K</span><span class="hero-card-label">Serie TV</span></div>
+      <div class="hero-card"><span class="hero-card-badge">144P</span><span class="hero-card-label">Film</span></div>
+      <div class="hero-card"><span class="hero-card-badge">Live</span><span class="hero-card-label">Sport</span></div>
+      <div class="hero-card"><span class="hero-card-badge">Best</span><span class="hero-card-label">Cultura</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee-section">
+  <div class="marquee-track">
+    <span class="marquee-item">Film in Prima Visione</span><span class="marquee-item">Serie Originali</span><span class="marquee-item">Sport Live</span><span class="marquee-item">4K Ultra HD</span><span class="marquee-item">Dolby Atmos</span><span class="marquee-item">Nessuna Pubblicità</span><span class="marquee-item">Download Offline</span><span class="marquee-item">Film in Prima Visione</span><span class="marquee-item">Serie Originali</span><span class="marquee-item">Sport Live</span><span class="marquee-item">4K Ultra HD</span><span class="marquee-item">Dolby Atmos</span><span class="marquee-item">Nessuna Pubblicità</span><span class="marquee-item">Download Offline</span>
+  </div>
+</div>
+
+<section class="categories">
+  <div class="section-header"><div class="section-tag">Esplora</div><h2 class="section-title">Tutto quello che vuoi</h2></div>
+  <div class="cats-grid">
+    <div class="cat-card" onclick="showPage('films')" style="cursor:pointer"><span class="cat-icon">🎬</span><div class="cat-name">Cinema</div><div class="cat-count">+30 titoli</div></div>
+    <div class="cat-card" onclick="showPage('serie')" style="cursor:pointer"><span class="cat-icon">📺</span><div class="cat-name">Serie TV</div><div class="cat-count">+17 serie</div></div>
+    <div class="cat-card" onclick="showPage('sport')" style="cursor:pointer"><span class="cat-icon">⚽</span><div class="cat-name">Sport</div><div class="cat-count">+300 eventi live</div></div>
+    <div class="cat-card"><span class="cat-icon">🎥</span><div class="cat-name">Documentari</div><div class="cat-count">+10 titoli</div></div>
+  </div>
+</section>
+
+<section class="plans">
+  <div class="section-header"><div class="section-tag">Abbonati</div><h2 class="section-title">Scegli il tuo piano</h2></div>
+  <div class="plans-grid">
+    <div class="plan-card">
+      <div class="plan-name">Smart</div><div class="plan-price"><sup>€</sup>4<span style="font-size:1.5rem">,99</span></div>
+      <div class="plan-period">al mese · disdici quando vuoi</div><div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li class="active"><span class="check">✓</span>Film e Serie TV</li>
+        <li class="active"><span class="check">✓</span>1 schermo contemporaneo</li>
+        <li class="active"><span class="check">✓</span>HD 1080p</li>
+        <li><span class="check" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">✕</span>Sport Live</li>
+        <li><span class="check" style="background:rgba(255,255,255,0.05);color:var(--text-muted)">✕</span>Download offline</li>
+      </ul>
+      <a href="#" class="btn-plan">Scegli Smart</a>
+    </div>
+    <div class="plan-card featured">
+      <span class="featured-badge">Più scelto</span>
+      <div class="plan-name">Total</div><div class="plan-price"><sup>€</sup>9<span style="font-size:1.5rem">,99</span></div>
+      <div class="plan-period">al mese · disdici quando vuoi</div><div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li class="active"><span class="check">✓</span>Film e Serie TV</li>
+        <li class="active"><span class="check">✓</span>3 schermi contemporanei</li>
+        <li class="active"><span class="check">✓</span>4K Ultra HD + Dolby</li>
+        <li class="active"><span class="check">✓</span>Sport Live incluso</li>
+        <li class="active"><span class="check">✓</span>Download offline</li>
+      </ul>
+      <a href="#" class="btn-plan">Scegli Total</a>
+    </div>
+    <div class="plan-card">
+      <div class="plan-name">Family</div><div class="plan-price"><sup>€</sup>14<span style="font-size:1.5rem">,99</span></div>
+      <div class="plan-period">al mese · disdici quando vuoi</div><div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li class="active"><span class="check">✓</span>Film e Serie TV</li>
+        <li class="active"><span class="check">✓</span>6 schermi contemporanei</li>
+        <li class="active"><span class="check">✓</span>4K Ultra HD + Dolby</li>
+        <li class="active"><span class="check">✓</span>Sport Live incluso</li>
+        <li class="active"><span class="check">✓</span>Profili Kids separati</li>
+      </ul>
+      <a href="#" class="btn-plan">Scegli Family</a>
+    </div>
+  </div>
+</section>
+</div><!-- end page-home -->
+
+<!-- FILMS PAGE -->
+<div id="page-films" class="page">
+  <div class="films-page">
+    <div class="films-hero">
+      <div class="films-hero-bg"></div>
+      <div class="films-hero-content">
+        <div class="films-breadcrumb"><span onclick="showPage('home')">Home</span> › Film</div>
+        <h1 class="films-title">Il nostro <em>Cinema</em></h1>
+        <p class="films-subtitle">32 titoli selezionati · Classici, cult e prima visione</p>
+      </div>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterFilms(this,'all')">Tutti</button>
+      <button class="filter-btn" onclick="filterFilms(this,'classico')">Classici</button>
+      <button class="filter-btn" onclick="filterFilms(this,'cult')">Cult</button>
+      <button class="filter-btn" onclick="filterFilms(this,'azione')">Azione</button>
+      <button class="filter-btn" onclick="filterFilms(this,'thriller')">Thriller</button>
+      <button class="filter-btn" onclick="filterFilms(this,'fantascienza')">Fantascienza</button>
+      <button class="filter-btn" onclick="filterFilms(this,'commedia')">Commedia</button>
+      <button class="filter-btn" onclick="filterFilms(this,'italiano')">Cinema Italiano</button>
+    </div>
+    <div class="featured-film" onclick="openModal('Io non ho paura','imgs/films/io-non-ho-paura.webp','2003 · 108 min · Gabriele Salvatores','Estate 1978: un bambino di 9 anni scopre per caso un segreto nascosto in un campo di grano.')">
+      <img src="imgs/films/io-non-ho-paura.webp" class="featured-film-img" alt="Io non ho paura" onerror="this.style.display='none'">
+      <div class="featured-film-overlay">
+        <div class="featured-film-info">
+          <span class="featured-tag">★ In evidenza</span>
+          <div class="featured-film-title">Io non ho paura</div>
+          <div class="featured-film-meta"><span>2003</span><div class="meta-dot"></div><span>108 min</span><div class="meta-dot"></div><span>Gabriele Salvatores</span></div>
+          <p class="featured-film-desc">Estate 1978: un bambino di 9 anni scopre per caso un segreto nascosto in un campo di grano che cambierà per sempre la sua vita.</p>
+          <div class="featured-btns"><button class="btn-watch">▶ Guarda ora</button><button class="btn-more">+ Lista</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="films-section">
+      <div class="films-section-title">Tutti i Film</div>
+      <div class="films-grid" id="filmsGrid">
+        <div class="film-card" data-genre="italiano thriller" onclick="openModal('Io non ho paura','imgs/films/io-non-ho-paura.webp','2003 · 108 min · Gabriele Salvatores','Estate 1978: un bambino di 9 anni scopre per caso un segreto nascosto in un campo di grano.')"><img src="imgs/films/io-non-ho-paura.webp" alt="Io non ho paura" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%231c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>Io non ho paura</text></svg>'"><div class="film-card-overlay"><div class="film-title">Io non ho paura</div><div class="film-year">2003</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Io non ho paura</div></div><span class="film-badge new">New</span></div>
+        <div class="film-card" data-genre="classico" onclick="openModal('Arancia Meccanica','imgs/films/arancia-meccanica.webp','1971 · 136 min · Stanley Kubrick','Un futuro distopico in cui un giovane criminale viene sottoposto a una cura sperimentale per eliminare i suoi istinti violenti.')"><img src="imgs/films/arancia-meccanica.webp" alt="Arancia Meccanica" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%231c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>Arancia Meccanica</text></svg>'"><div class="film-card-overlay"><div class="film-title">Arancia Meccanica</div><div class="film-year">1971</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Arancia Meccanica</div></div><span class="film-badge">Cult</span></div>
+        <div class="film-card" data-genre="classico" onclick="openModal('Fahrenheit 451','imgs/films/fahrenheit451.webp','1966 · 112 min · François Truffaut','In un futuro totalitario i libri sono proibiti e i vigili del fuoco hanno il compito di bruciarli.')"><img src="imgs/films/fahrenheit451.webp" alt="Fahrenheit 451" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%231c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>Fahrenheit 451</text></svg>'"><div class="film-card-overlay"><div class="film-title">Fahrenheit 451</div><div class="film-year">1966</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Fahrenheit 451</div></div><span class="film-badge">Classico</span></div>
+        <div class="film-card" data-genre="classico" onclick="openModal('C\&#39;era una volta in America','imgs/films/once-upon-america.webp','1984 · 229 min · Sergio Leone','Un epico affresco sulla vita di una banda di ebrei criminali cresciuti nei bassifondi di New York.')"><img src="imgs/films/once-upon-america.webp" alt="C'era una volta in America" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%231c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2211%22 x=%2210%22 y=%22150%22>C era una volta</text></svg>'"><div class="film-card-overlay"><div class="film-title">C'era una volta in America</div><div class="film-year">1984</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">C'era una volta in America</div></div><span class="film-badge">Classico</span></div>
+        <div class="film-card" data-genre="classico" onclick="openModal('L\&#39;attimo fuggente','imgs/films/attimo-fugge.webp','1989 · 128 min · Peter Weir','Un professore fuori dagli schemi ispira i suoi studenti ad abbracciare la letteratura.')"><img src="imgs/films/attimo-fugge.webp" alt="L'attimo fuggente" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%231c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>L attimo fuggente</text></svg>'"><div class="film-card-overlay"><div class="film-title">L'attimo fuggente</div><div class="film-year">1989</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">L'attimo fuggente</div></div><span class="film-badge new">HD</span></div>
+        <div class="film-card" data-genre="fantascienza" onclick="openModal('Halo: La caduta di Reach','imgs/films/halo-reach.webp','2015 · 65 min · Frank O\&#39;Connor','La storia delle origini dei Leggendari Spartan e della battaglia per difendere il pianeta Reach.')"><img src="imgs/films/halo-reach.webp" alt="Halo: La caduta di Reach" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%231c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2212%22 x=%2210%22 y=%22150%22>Halo Reach</text></svg>'"><div class="film-card-overlay"><div class="film-title">Halo: La caduta di Reach</div><div class="film-year">2015</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Halo: La caduta di Reach</div></div><span class="film-badge new">New</span></div>
+        <div class="film-card" data-genre="azione" onclick="openModal('The Amazing Spider-Man','imgs/films/amazing-spider.webp','2012 · 136 min · Marc Webb','Peter Parker scopre un segreto sul passato dei suoi genitori e viene morso da un ragno geneticamente modificato.')"><img src="imgs/films/amazing-spider.webp" alt="The Amazing Spider-Man" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%231c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2213%22 x=%2210%22 y=%22150%22>Spider-Man</text></svg>'"><div class="film-card-overlay"><div class="film-title">The Amazing Spider-Man</div><div class="film-year">2012</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">The Amazing Spider-Man</div></div><span class="film-badge hd">4K</span></div>
+        <div class="film-card" data-genre="azione" onclick="openModal('The Transporter','imgs/films/trasporter.webp','2002 · 92 min · Louis Leterrier','Un ex militare lavora come corriere di lusso: trasporta qualsiasi cosa senza fare domande. Fino a quando apre il pacco.')"><img src="imgs/films/trasporter.webp" alt="The Transporter" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%231c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>Transporter</text></svg>'"><div class="film-card-overlay"><div class="film-title">The Transporter</div><div class="film-year">2002</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">The Transporter</div></div></div>
+        <div class="film-card" data-genre="fantascienza" onclick="openModal('2001: Odissea nello spazio','imgs/films/odissea-spazio.webp','1968 · 149 min · Stanley Kubrick','Un\&#39;epica avventura spaziale che esplora l\&#39;evoluzione umana, la tecnologia e l\&#39;ignoto.')"><img src="imgs/films/odissea-spazio.webp" alt="2001: Odissea nello spazio" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%231c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2212%22 x=%2210%22 y=%22150%22>2001 Odissea</text></svg>'"><div class="film-card-overlay"><div class="film-title">2001: Odissea nello spazio</div><div class="film-year">1968</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">2001: Odissea nello spazio</div></div><span class="film-badge">Cult</span></div>
+        <div class="film-card" data-genre="cult" onclick="openModal('Pulp Fiction','imgs/films/pulpfiction.webp','1994 · 154 min · Quentin Tarantino','Una storia di criminali, amore e redenzione intrecciata in modo non lineare.')"><img src="imgs/films/pulpfiction.webp" alt="Pulp Fiction" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%231c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>Pulp Fiction</text></svg>'"><div class="film-card-overlay"><div class="film-title">Pulp Fiction</div><div class="film-year">1994</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Pulp Fiction</div></div><span class="film-badge">Cult</span></div>
+        <div class="film-card" data-genre="cult" onclick="openModal('Quei bravi ragazzi','imgs/films/queibravirag.webp','1990 · 146 min · Martin Scorsese','La vera storia di Henry Hill, un ragazzo di strada diventato uno dei membri più influenti della mafia americana.')"><img src="imgs/films/queibravirag.webp" alt="Quei bravi ragazzi" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%231c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>Quei bravi ragazzi</text></svg>'"><div class="film-card-overlay"><div class="film-title">Quei bravi ragazzi</div><div class="film-year">1990</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Quei bravi ragazzi</div></div><span class="film-badge">Cult</span></div>
+        <div class="film-card" data-genre="cult" onclick="openModal('Fight Club','imgs/films/fightclub.webp','1999 · 139 min · David Fincher','Un impiegato insoddisfatto e un venditore di sapone fondano un fight club segreto.')"><img src="imgs/films/fightclub.webp" alt="Fight Club" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%231c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>Fight Club</text></svg>'"><div class="film-card-overlay"><div class="film-title">Fight Club</div><div class="film-year">1999</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Fight Club</div></div><span class="film-badge">Cult</span></div>
+        <div class="film-card" data-genre="cult" onclick="openModal('The Wolf of Wall Street','imgs/films/thewolfofwallstreet.webp','2013 · 180 min · Martin Scorsese','La storia vera di Jordan Belfort, broker di Wall Street corrotto e fraudolento.')"><img src="imgs/films/thewolfofwallstreet.webp" alt="The Wolf of Wall Street" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2212%22 x=%2210%22 y=%22150%22>Wolf of Wall St.</text></svg>'"><div class="film-card-overlay"><div class="film-title">The Wolf of Wall Street</div><div class="film-year">2013</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">The Wolf of Wall Street</div></div><span class="film-badge hd">4K</span></div>
+        <div class="film-card" data-genre="thriller" onclick="openModal('Le iene','imgs/films/iene.webp','1992 · 99 min · Quentin Tarantino','Dopo una rapina andata storta, i sopravvissuti cercano di capire chi li ha traditi.')"><img src="imgs/films/iene.webp" alt="Le iene" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>Le iene</text></svg>'"><div class="film-card-overlay"><div class="film-title">Le iene</div><div class="film-year">1992</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Le iene</div></div><span class="film-badge">Cult</span></div>
+        <div class="film-card" data-genre="azione" onclick="openModal('Shark - Il primo squalo','imgs/films/shark1.webp','2018 · 113 min · Jon Turteltaub','Una squadra di scienziati si trova faccia a faccia con il Megalodon, uno squalo preistorico.')"><img src="imgs/films/shark1.webp" alt="Shark" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2212%22 x=%2210%22 y=%22150%22>Shark</text></svg>'"><div class="film-card-overlay"><div class="film-title">Shark - Il primo squalo</div><div class="film-year">2018</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Shark</div></div><span class="film-badge new">New</span></div>
+        <div class="film-card" data-genre="cult" onclick="openModal('Bastardi senza gloria','imgs/films/bastardi.webp','2009 · 153 min · Quentin Tarantino','Un gruppo di soldati ebrei americani semina il terrore tra le fila naziste.')"><img src="imgs/films/bastardi.webp" alt="Bastardi senza gloria" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2212%22 x=%2210%22 y=%22150%22>Bastardi senza gloria</text></svg>'"><div class="film-card-overlay"><div class="film-title">Bastardi senza gloria</div><div class="film-year">2009</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Bastardi senza gloria</div></div><span class="film-badge">Cult</span></div>
+        <div class="film-card" data-genre="classico" onclick="openModal('Full Metal Jacket','imgs/films/full-metal-jacket.webp','1987 · 116 min · Stanley Kubrick','Il durissimo addestramento dei marines statunitensi durante la guerra del Vietnam.')"><img src="imgs/films/full-metal-jacket.webp" alt="Full Metal Jacket" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>Full Metal Jacket</text></svg>'"><div class="film-card-overlay"><div class="film-title">Full Metal Jacket</div><div class="film-year">1987</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Full Metal Jacket</div></div><span class="film-badge">Classico</span></div>
+        <div class="film-card" data-genre="thriller" onclick="openModal('Ocean\&#39;s Eleven','imgs/films/oceans11.webp','2001 · 116 min · Steven Soderbergh','Danny Ocean mette insieme undici specialisti per la rapina più audace di Las Vegas.')"><img src="imgs/films/oceans11.webp" alt="Ocean's Eleven" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2213%22 x=%2210%22 y=%22150%22>Ocean s Eleven</text></svg>'"><div class="film-card-overlay"><div class="film-title">Ocean's Eleven</div><div class="film-year">2001</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Ocean's Eleven</div></div><span class="film-badge hd">HD</span></div>
+        <div class="film-card" data-genre="italiano" onclick="openModal('Nuovo Cinema Paradiso','imgs/films/cinema-paradiso.webp','1988 · 155 min · Giuseppe Tornatore','Un famoso regista ricorda la sua infanzia in un paesino siciliano.')"><img src="imgs/films/cinema-paradiso.webp" alt="Nuovo Cinema Paradiso" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2212%22 x=%2210%22 y=%22150%22>Cinema Paradiso</text></svg>'"><div class="film-card-overlay"><div class="film-title">Nuovo Cinema Paradiso</div><div class="film-year">1988</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Nuovo Cinema Paradiso</div></div><span class="film-badge">Italiano</span></div>
+        <div class="film-card" data-genre="classico" onclick="openModal('Forrest Gump','imgs/films/forrest.webp','1994 · 142 min · Robert Zemeckis','La straordinaria vita di un uomo che senza volerlo diventa testimone dei più grandi eventi della storia americana.')"><img src="imgs/films/forrest.webp" alt="Forrest Gump" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>Forrest Gump</text></svg>'"><div class="film-card-overlay"><div class="film-title">Forrest Gump</div><div class="film-year">1994</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Forrest Gump</div></div><span class="film-badge">Classico</span></div>
+        <div class="film-card" data-genre="cult" onclick="openModal('Il padrino','imgs/films/il-padrino.webp','1972 · 175 min · Francis Ford Coppola','La storia della famiglia Corleone e del passaggio di potere da padre a figlio.')"><img src="imgs/films/il-padrino.webp" alt="Il padrino" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>Il padrino</text></svg>'"><div class="film-card-overlay"><div class="film-title">Il padrino</div><div class="film-year">1972</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Il padrino</div></div><span class="film-badge">Cult</span></div>
+        <div class="film-card" data-genre="azione" onclick="openModal('Il cavaliere oscuro','imgs/films/cavaliere-oscuro.webp','2008 · 152 min · Christopher Nolan','Batman affronta il Joker, un criminale caotico che vuole mettere in ginocchio Gotham City.')"><img src="imgs/films/cavaliere-oscuro.webp" alt="Il cavaliere oscuro" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2212%22 x=%2210%22 y=%22150%22>Il cavaliere oscuro</text></svg>'"><div class="film-card-overlay"><div class="film-title">Il cavaliere oscuro</div><div class="film-year">2008</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Il cavaliere oscuro</div></div><span class="film-badge hd">4K</span></div>
+        <div class="film-card" data-genre="cult" onclick="openModal('The Truman Show','imgs/films/truman-show.webp','1998 · 103 min · Peter Weir','Un uomo scopre che la sua intera vita è stata uno show televisivo trasmesso in diretta.')"><img src="imgs/films/truman-show.webp" alt="The Truman Show" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2213%22 x=%2210%22 y=%22150%22>The Truman Show</text></svg>'"><div class="film-card-overlay"><div class="film-title">The Truman Show</div><div class="film-year">1998</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">The Truman Show</div></div><span class="film-badge">Cult</span></div>
+        <div class="film-card" data-genre="classico" onclick="openModal('Le ali della libertà','imgs/films/le-ali-della-liberta.webp','1994 · 142 min · Frank Darabont','Due uomini stringono una profonda amicizia nel carcere di Shawshank.')"><img src="imgs/films/le-ali-della-liberta.webp" alt="Le ali della libertà" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2212%22 x=%2210%22 y=%22150%22>Le ali della liberta</text></svg>'"><div class="film-card-overlay"><div class="film-title">Le ali della libertà</div><div class="film-year">1994</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Le ali della libertà</div></div><span class="film-badge">Classico</span></div>
+        <div class="film-card" data-genre="commedia italiano" onclick="openModal('Febbre da cavallo','imgs/films/febbre-cavallo.webp','1976 · 100 min · Steno','Le avventure tragicomiche di un gruppo di scommettitori romani incalliti.')"><img src="imgs/films/febbre-cavallo.webp" alt="Febbre da cavallo" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2213%22 x=%2210%22 y=%22150%22>Febbre da cavallo</text></svg>'"><div class="film-card-overlay"><div class="film-title">Febbre da cavallo</div><div class="film-year">1976</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Febbre da cavallo</div></div><span class="film-badge">Italiano</span></div>
+        <div class="film-card" data-genre="commedia azione" onclick="openModal('Taxxi 2','imgs/films/taxxi2.webp','2000 · 88 min · Gérard Krawczyk','Daniel e Emilien tornano per un\&#39;altra corsa folle per le strade di Marsiglia.')"><img src="imgs/films/taxxi2.webp" alt="Taxxi 2" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>Taxxi 2</text></svg>'"><div class="film-card-overlay"><div class="film-title">Taxxi 2</div><div class="film-year">2000</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Taxxi 2</div></div></div>
+        <div class="film-card" data-genre="commedia italiano" onclick="openModal('Quo vado?','imgs/films/quo-vado.webp','2016 · 86 min · Gennaro Nunziante','Checco Zalone è un impiegato statale attaccatissimo al posto fisso.')"><img src="imgs/films/quo-vado.webp" alt="Quo vado?" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>Quo vado?</text></svg>'"><div class="film-card-overlay"><div class="film-title">Quo vado?</div><div class="film-year">2016</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Quo vado?</div></div><span class="film-badge">Italiano</span></div>
+        <div class="film-card" data-genre="commedia italiano" onclick="openModal('Tre uomini e una gamba','imgs/films/tre-uomini-una-gamba.webp','1997 · 95 min · Aldo, Giovanni e Giacomo','Tre cognati in viaggio verso la Puglia devono consegnare una scultura preziosa.')"><img src="imgs/films/tre-uomini-una-gamba.webp" alt="Tre uomini e una gamba" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2211%22 x=%2210%22 y=%22150%22>Tre uomini e una gamba</text></svg>'"><div class="film-card-overlay"><div class="film-title">Tre uomini e una gamba</div><div class="film-year">1997</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Tre uomini e una gamba</div></div><span class="film-badge">Italiano</span></div>
+        <div class="film-card" data-genre="classico italiano" onclick="openModal('La dolce vita','imgs/films/la-dolce-vita.webp','1960 · 174 min · Federico Fellini','Un giornalista romano vaga per la città tra feste mondane, amori fugaci e il vuoto della società.')"><img src="imgs/films/la-dolce-vita.webp" alt="La dolce vita" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>La dolce vita</text></svg>'"><div class="film-card-overlay"><div class="film-title">La dolce vita</div><div class="film-year">1960</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">La dolce vita</div></div><span class="film-badge">Classico</span></div>
+        <div class="film-card" data-genre="italiano" onclick="openModal('La vita è bella','imgs/films/la-vita-e-bella.webp','1997 · 116 min · Roberto Benigni','Un padre usa la fantasia per proteggere suo figlio dalla realtà di un campo di concentramento.')"><img src="imgs/films/la-vita-e-bella.webp" alt="La vita è bella" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2213%22 x=%2210%22 y=%22150%22>La vita e bella</text></svg>'"><div class="film-card-overlay"><div class="film-title">La vita è bella</div><div class="film-year">1997</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">La vita è bella</div></div><span class="film-badge">Italiano</span></div>
+        <div class="film-card" data-genre="italiano" onclick="openModal('Mediterraneo','imgs/films/mediterraneo.webp','1991 · 90 min · Gabriele Salvatores','Un gruppo di soldati italiani viene dimenticato su un\&#39;isola greca durante la Seconda Guerra Mondiale.')"><img src="imgs/films/mediterraneo.webp" alt="Mediterraneo" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>Mediterraneo</text></svg>'"><div class="film-card-overlay"><div class="film-title">Mediterraneo</div><div class="film-year">1991</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Mediterraneo</div></div><span class="film-badge">Italiano</span></div>
+        <div class="film-card" data-genre="commedia italiano" onclick="openModal('Fantozzi','imgs/films/fantozzi.webp','1975 · 100 min · Luciano Salce','Le disavventure tragicomiche del ragionier Ugo Fantozzi, il più sventurato impiegato d\&#39;Italia.')"><img src="imgs/films/fantozzi.webp" alt="Fantozzi" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 200 300%22><rect fill=%22%221c1c28%22 width=%22200%22 height=%22300%22/><text fill=%22%23e8ff00%22 font-size=%2214%22 x=%2210%22 y=%22150%22>Fantozzi</text></svg>'"><div class="film-card-overlay"><div class="film-title">Fantozzi</div><div class="film-year">1975</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Fantozzi</div></div><span class="film-badge">Italiano</span></div>
+      </div>
+    </div>
+  </div>
+</div><!-- end page-films -->
+
+<!-- SERIE PAGE -->
+<div id="page-serie" class="page">
+  <div class="films-page">
+    <div class="films-hero">
+      <div class="films-hero-bg" style="background: radial-gradient(ellipse at 30% 50%, rgba(51,204,255,0.07) 0%, transparent 60%), radial-gradient(ellipse at 80% 20%, rgba(255,60,172,0.1) 0%, transparent 50%);"></div>
+      <div class="films-hero-content">
+        <div class="films-breadcrumb"><span onclick="showPage('home')">Home</span> › Serie TV</div>
+        <h1 class="films-title">Le nostre <em>Serie</em></h1>
+        <p class="films-subtitle">17 serie selezionate · Drama, thriller e molto altro</p>
+      </div>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterSerie(this,'all')">Tutte</button>
+      <button class="filter-btn" onclick="filterSerie(this,'drama')">Drama</button>
+      <button class="filter-btn" onclick="filterSerie(this,'thriller')">Thriller</button>
+      <button class="filter-btn" onclick="filterSerie(this,'crime')">Crime</button>
+      <button class="filter-btn" onclick="filterSerie(this,'teen')">Teen</button>
+      <button class="filter-btn" onclick="filterSerie(this,'fantascienza')">Fantascienza</button>
+      <button class="filter-btn" onclick="filterSerie(this,'italiano')">Italiano</button>
+    </div>
+    <div class="featured-film" onclick="openModal('L\&#39;Amica Geniale','imgs/serie/lamicageniale.jpg','2018– · 2ª Stagione · RAI · HBO','La storia del legame straordinario tra Elena e Lila, due amiche cresciute in un rione povero di Napoli nel dopoguerra.')">
+      <img src="imgs/serie/lamicageniale.jpg" class="featured-film-img" alt="L'Amica Geniale" onerror="this.style.display='none'">
+      <div class="featured-film-overlay">
+        <div class="featured-film-info">
+          <span class="featured-tag">★ In evidenza</span>
+          <div class="featured-film-title">L'Amica Geniale</div>
+          <div class="featured-film-meta"><span>2018–</span><div class="meta-dot"></div><span>Stagione 2</span><div class="meta-dot"></div><span>RAI · HBO</span></div>
+          <p class="featured-film-desc">La storia del legame straordinario tra Elena e Lila, due amiche cresciute in un rione povero di Napoli nel dopoguerra.</p>
+          <div class="featured-btns"><button class="btn-watch">▶ Guarda ora</button><button class="btn-more">+ Lista</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="films-section">
+      <div class="films-section-title">Tutte le Serie</div>
+      <div class="films-grid" id="serieGrid">
+        <div class="film-card" data-genre="fantascienza" onclick="openModal('Halo','imgs/serie/halo.webp','2022– · 1ª Stagione · Paramount+','Master Chief e gli Spartan combattono contro i Covenant in una guerra intergalattica.')"><img src="imgs/serie/halo.webp" alt="Halo" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Halo</div><div class="film-year">Stagione 1</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Halo</div></div><span class="film-badge new">New</span></div>
+        <div class="film-card" data-genre="crime drama" onclick="openModal('Peaky Blinders','imgs/serie/pickie-blind.jpg','2013–2022 · 6 stagioni · BBC One','La storia dei Shelby, una famiglia di gangster di Birmingham guidata dal carismatico Tommy Shelby.')"><img src="imgs/serie/pickie-blind.jpg" alt="Peaky Blinders" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Peaky Blinders</div><div class="film-year">6 stagioni</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Peaky Blinders</div></div><span class="film-badge">Crime</span></div>
+        <div class="film-card" data-genre="thriller crime" onclick="openModal('Prison Break','imgs/serie/prison-break.jpeg','2005–2017 · 5 stagioni · Fox','Un uomo si fa arrestare per entrare nella stessa prigione del fratello, condannato a morte, e aiutarlo a fuggire.')"><img src="imgs/serie/prison-break.jpeg" alt="Prison Break" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Prison Break</div><div class="film-year">5 stagioni</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Prison Break</div></div><span class="film-badge">Thriller</span></div>
+        <div class="film-card" data-genre="drama teen" onclick="openModal('One Tree Hill','imgs/serie/onetreehills.webp','2003–2012 · 9 stagioni · The CW','Le vite intrecciate di due fratellastri in una piccola città del North Carolina.')"><img src="imgs/serie/onetreehills.webp" alt="One Tree Hill" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">One Tree Hill</div><div class="film-year">9 stagioni</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">One Tree Hill</div></div><span class="film-badge">Drama</span></div>
+        <div class="film-card" data-genre="drama teen" onclick="openModal('Gossip Girl','imgs/serie/gossipgirl.jpg','2007–2012 · 6 stagioni · The CW','Una misteriosa blogger segue le vite dei giovani privilegiati dell\&#39;Upper East Side di New York.')"><img src="imgs/serie/gossipgirl.jpg" alt="Gossip Girl" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Gossip Girl</div><div class="film-year">6 stagioni</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Gossip Girl</div></div><span class="film-badge">Drama</span></div>
+        <div class="film-card" data-genre="drama" onclick="openModal('Orange Is the New Black','imgs/serie/Orange-is-the-new-blackjpg.jpg','2013–2019 · 7 stagioni · Netflix','Una giovane donna viene condannata a 15 mesi in un carcere femminile.')"><img src="imgs/serie/Orange-is-the-new-blackjpg.jpg" alt="Orange Is the New Black" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Orange Is the New Black</div><div class="film-year">7 stagioni</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Orange Is the New Black</div></div><span class="film-badge new">New</span></div>
+        <div class="film-card" data-genre="drama" onclick="openModal('La Regina degli Scacchi','imgs/serie/la-regina-degli-scacchi.webp','2020 · 1 stagione · Netflix','Un\&#39;orfana prodigio diventa la migliore giocatrice di scacchi del mondo.')"><img src="imgs/serie/la-regina-degli-scacchi.webp" alt="La Regina degli Scacchi" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">La Regina degli Scacchi</div><div class="film-year">1 stagione</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">La Regina degli Scacchi</div></div><span class="film-badge hd">4K</span></div>
+        <div class="film-card" data-genre="drama teen" onclick="openModal('Outer Banks','imgs/serie/outerbanks.webp','2020– · 4 stagioni · Netflix','Un gruppo di adolescenti si lancia in una caccia al tesoro tra pericoli e colpi di scena.')"><img src="imgs/serie/outerbanks.webp" alt="Outer Banks" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Outer Banks</div><div class="film-year">4 stagioni</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Outer Banks</div></div><span class="film-badge new">New</span></div>
+        <div class="film-card" data-genre="teen fantascienza" onclick="openModal('Teen Wolf','imgs/serie/teenwolf.jpg','2011–2017 · 6 stagioni · MTV','Un adolescente viene morso da un lupo mannaro e deve bilanciare la sua nuova natura.')"><img src="imgs/serie/teenwolf.jpg" alt="Teen Wolf" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Teen Wolf</div><div class="film-year">6 stagioni</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Teen Wolf</div></div><span class="film-badge">Teen</span></div>
+        <div class="film-card" data-genre="thriller crime drama" onclick="openModal('Dexter','imgs/serie/dexter.jpg','2006–2013 · 8 stagioni · Showtime','Dexter Morgan è un analista forense di giorno, serial killer di notte.')"><img src="imgs/serie/dexter.jpg" alt="Dexter" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Dexter</div><div class="film-year">8 stagioni</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Dexter</div></div><span class="film-badge">Thriller</span></div>
+        <div class="film-card" data-genre="azione" onclick="openModal('Devil May Cry','imgs/serie/devilmaycry.png','2025- · 1ª Stagione · Netflix','Serie animata del celebre franchise.')"><img src="imgs/serie/devilmaycry.png" alt="Devil May Cry" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Devil May Cry</div><div class="film-year">1 stagione</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Devil May Cry</div></div><span class="film-badge">Azione</span></div>
+        <div class="film-card" data-genre="crime thriller" onclick="openModal('La Casa di Carta','imgs/serie/la-casa-di-carta.png','2017–2021 · 5 stagioni · Netflix','Un geniale professore pianifica la rapina più grande della storia spagnola.')"><img src="imgs/serie/la-casa-di-carta.png" alt="La Casa di Carta" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">La Casa di Carta</div><div class="film-year">5 stagioni</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">La Casa di Carta</div></div><span class="film-badge">Crime</span></div>
+        <div class="film-card" data-genre="fantascienza drama" onclick="openModal('Stranger Things','imgs/serie/strangerthings.jpeg','2016– · 5 stagioni · Netflix','Un gruppo di ragazzini di Hawkins scopre un mondo parallelo soprannaturale chiamato Sottosopra.')"><img src="imgs/serie/strangerthings.jpeg" alt="Stranger Things" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Stranger Things</div><div class="film-year">5 stagioni</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Stranger Things</div></div><span class="film-badge hd">4K</span></div>
+        <div class="film-card" data-genre="teen drama" onclick="openModal('Riverdale','imgs/serie/riverdale.jpg','2017–2023 · 7 stagioni · The CW','La tranquilla cittadina di Riverdale nasconde segreti oscuri che i giovani protagonisti cercano di svelare.')"><img src="imgs/serie/riverdale.jpg" alt="Riverdale" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Riverdale</div><div class="film-year">7 stagioni</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Riverdale</div></div><span class="film-badge">Teen</span></div>
+        <div class="film-card" data-genre="drama" onclick="openModal('Grey\&#39;s Anatomy','imgs/serie/greysanatomy.jpg','2005– · 20 stagioni · ABC','Le vite professionali e personali dei medici chirurghi del Seattle Grace Hospital.')"><img src="imgs/serie/greysanatomy.jpg" alt="Grey's Anatomy" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Grey's Anatomy</div><div class="film-year">20 stagioni</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Grey's Anatomy</div></div><span class="film-badge">Drama</span></div>
+        <div class="film-card" data-genre="drama" onclick="openModal('Bridgerton','imgs/serie/bridgerton.png','2020– · 3 stagioni · Netflix','Nella Londra del XIX secolo, la famiglia Bridgerton naviga tra intrighi e amori.')"><img src="imgs/serie/bridgerton.png" alt="Bridgerton" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Bridgerton</div><div class="film-year">3 stagioni</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Bridgerton</div></div><span class="film-badge new">New</span></div>
+        <div class="film-card" data-genre="teen drama fantascienza" onclick="openModal('The Vampire Diaries','imgs/serie/thevampirediares.webp','2009–2017 · 8 stagioni · The CW','Una ragazza si innamora di un vampiro centenario a Mystic Falls.')"><img src="imgs/serie/thevampirediares.webp" alt="The Vampire Diaries" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">The Vampire Diaries</div><div class="film-year">8 stagioni</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">The Vampire Diaries</div></div><span class="film-badge">Teen</span></div>
+        <div class="film-card" data-genre="drama italiano" onclick="openModal('L\&#39;Amica Geniale','imgs/serie/lamicageniale.jpg','2018– · 2ª Stagione · RAI · HBO','La storia del legame straordinario tra Elena e Lila, due amiche cresciute in un rione povero di Napoli.')"><img src="imgs/serie/lamicageniale.jpg" alt="L'Amica Geniale" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">L'Amica Geniale</div><div class="film-year">Stagione 2</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">L'Amica Geniale</div></div><span class="film-badge">Italiano</span></div>
+      </div>
+    </div>
+  </div>
+</div><!-- end page-serie -->
+
+<!-- SPORT PAGE -->
+<div id="page-sport" class="page">
+  <div class="films-hero" style="background: linear-gradient(135deg, #0a0a0f 0%, #0d1a0a 50%, #0a0a0f 100%); padding-top: 120px;">
+    <div class="films-hero-bg" style="background: radial-gradient(ellipse at 60% 40%, rgba(50,200,50,0.12) 0%, transparent 70%)"></div>
+    <div class="films-hero-content">
+      <h1 class="films-title">Lo <em>Sport</em> Live</h1>
+      <p class="films-subtitle">Calcio, MotoGP, Basket, Tennis e molto altro · In diretta o on demand</p>
+    </div>
+  </div>
+  <div class="sport-stats-bar">
+    <div class="sport-stat"><span class="sport-stat-num">+300</span><span class="sport-stat-label">eventi live / anno</span></div>
+    <div class="sport-stat-divider"></div>
+    <div class="sport-stat"><span class="sport-stat-num">4K</span><span class="sport-stat-label">qualità video</span></div>
+    <div class="sport-stat-divider"></div>
+    <div class="sport-stat"><span class="sport-stat-num">10+</span><span class="sport-stat-label">sport coperti</span></div>
+    <div class="sport-stat-divider"></div>
+    <div class="sport-stat"><span class="sport-stat-num">Live</span><span class="sport-stat-label">nessun delay</span></div>
+  </div>
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterSport(this,'all')">Tutti</button>
+    <button class="filter-btn" onclick="filterSport(this,'calcio')">⚽ Calcio</button>
+    <button class="filter-btn" onclick="filterSport(this,'motori')">🏎 Motori</button>
+    <button class="filter-btn" onclick="filterSport(this,'basket')">🏀 Basket</button>
+    <button class="filter-btn" onclick="filterSport(this,'tennis')">🎾 Tennis</button>
+    <button class="filter-btn" onclick="filterSport(this,'rugby')">🏉 Rugby</button>
+    <button class="filter-btn" onclick="filterSport(this,'bodybuilding')">💪 Bodybuilding</button>
+    <button class="filter-btn" onclick="filterSport(this,'superbike')">🏍 Superbike</button>
+    <button class="filter-btn" onclick="filterSport(this,'altro')">Altro</button>
+  </div>
+  <div class="sport-section-title">🔴 In diretta ora</div>
+  <div id="liveNowBar" class="live-now-bar"></div>
+  <div class="sport-section-title" style="padding-top:16px">📅 Prossimamente</div>
+  <div id="scheduleStrip" class="schedule-strip"></div>
+  <div class="sport-section-title" style="padding-top:8px">📺 Tutto lo sport</div>
+  <div class="films-grid" id="sportGrid" style="padding: 0 48px 80px;">
+    <div class="film-card sport-card" data-genre="calcio" onclick="openModal('Serie A – Giornata 28','imgs/sport/seriea.jpg','Calcio · Live · 22:00','Il meglio della Serie A in diretta.')"><img src="imgs/sport/seriea.jpg" alt="Serie A" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Serie A – Giornata 28</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Serie A – Giornata 28</div></div><span class="film-badge" style="background:red;color:#fff">🔴 Live</span></div>
+    <div class="film-card sport-card" data-genre="calcio" onclick="openModal('Champions League','imgs/sport/championleague.webp','Calcio · Live · UEFA','Le migliori squadre d\&#39;Europa in competizione.')"><img src="imgs/sport/championleague.webp" alt="Champions League" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Champions League</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Champions League</div></div><span class="film-badge new">Live</span></div>
+    <div class="film-card sport-card" data-genre="calcio" onclick="openModal('Coppa Italia','imgs/sport/coppaitalia.jpg','Calcio · Knock-out · FIGC','La grande storia della coppa nazionale italiana.')"><img src="imgs/sport/coppaitalia.jpg" alt="Coppa Italia" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Coppa Italia</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Coppa Italia</div></div><span class="film-badge hd">4K</span></div>
+    <div class="film-card sport-card" data-genre="calcio" onclick="openModal('Premier League','imgs/sport/premierleague.jpeg','Calcio · Live · Sky Sports','Il campionato più seguito al mondo.')"><img src="imgs/sport/premierleague.jpeg" alt="Premier League" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Premier League</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Premier League</div></div><span class="film-badge hd">4K</span></div>
+    <div class="film-card sport-card" data-genre="calcio" onclick="openModal('Europa League','imgs/sport/europaleague.jpg','Calcio · Live · UEFA','La seconda competizione europea per club.')"><img src="imgs/sport/europaleague.jpg" alt="Europa League" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Europa League</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Europa League</div></div><span class="film-badge">HD</span></div>
+    <div class="film-card sport-card" data-genre="motori" onclick="openModal('Formula 1 2026','imgs/sport/formula1.jpg','Motori · Live · FIA','Tutta la stagione di Formula 1 dal GP d\&#39;Australia all\&#39;ultimo gran premio.')"><img src="imgs/sport/formula1.jpg" alt="Formula 1" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Formula 1 2026</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Formula 1 2026</div></div><span class="film-badge new">New</span></div>
+    <div class="film-card sport-card" data-genre="motori" onclick="openModal('Rally WRC','imgs/sport/wrcrally.jpg','Motori · Live · FIA WRC','Il campionato mondiale rally su ogni tipo di fondo.')"><img src="imgs/sport/wrcrally.jpg" alt="Rally WRC" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Rally WRC</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Rally WRC</div></div><span class="film-badge hd">4K</span></div>
+    <div class="film-card sport-card" data-genre="motori" onclick="openModal('MotoGP 2026','imgs/sport/motogp.jpg','Motori · Live · FIM','Il campionato mondiale di motociclismo. Ogni gran premio in diretta.')"><img src="imgs/sport/motogp.jpg" alt="MotoGP" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">MotoGP 2026</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">MotoGP 2026</div></div><span class="film-badge" style="background:red;color:#fff">🔴 Live</span></div>
+    <div class="film-card sport-card" data-genre="superbike motori" onclick="openModal('WorldSBK 2026','imgs/sport/worldsbk.jpg','Superbike · Live · FIM WorldSBK','Il campionato mondiale Superbike 2026.')"><img src="imgs/sport/worldsbk.jpg" alt="WorldSBK" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">WorldSBK 2026</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">WorldSBK 2026</div></div><span class="film-badge" style="background:red;color:#fff">🔴 Live</span></div>
+    <div class="film-card sport-card" data-genre="superbike motori" onclick="openModal('Superpole Race','imgs/sport/superpolerace.webp','Superbike · Live · FIM','La Superpole Race, la gara sprint del weekend WorldSBK.')"><img src="imgs/sport/superpolerace.webp" alt="Superpole Race" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Superpole Race</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Superpole Race</div></div><span class="film-badge new">New</span></div>
+    <div class="film-card sport-card" data-genre="basket" onclick="openModal('NBA 2024/25','imgs/sport/nba.png','Basket · Live · NBA','La regular season e i playoff NBA.')"><img src="imgs/sport/nba.png" alt="NBA" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">NBA 2024/25</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">NBA 2024/25</div></div><span class="film-badge new">Live</span></div>
+    <div class="film-card sport-card" data-genre="basket" onclick="openModal('Eurolega','imgs/sport/basketeuroleague.jpg','Basket · Live · EuroLeague','La massima competizione europea di pallacanestro.')"><img src="imgs/sport/basketeuroleague.jpg" alt="Eurolega" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Eurolega</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Eurolega</div></div><span class="film-badge hd">HD</span></div>
+    <div class="film-card sport-card" data-genre="tennis" onclick="openModal('Roland Garros 2026','imgs/sport/rolandgarros.jpg','Tennis · Live · ATP · WTA','Il grande slam della terra rossa.')"><img src="imgs/sport/rolandgarros.jpg" alt="Roland Garros" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Roland Garros 2026</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Roland Garros 2026</div></div><span class="film-badge new">New</span></div>
+    <div class="film-card sport-card" data-genre="tennis" onclick="openModal('Wimbledon 2026','imgs/sport/winbledom.webp','Tennis · Live · ATP · WTA','Il torneo più prestigioso al mondo sull\&#39;erba londinese.')"><img src="imgs/sport/winbledom.webp" alt="Wimbledon" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Wimbledon 2026</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Wimbledon</div></div><span class="film-badge hd">4K</span></div>
+    <div class="film-card sport-card" data-genre="rugby" onclick="openModal('Sei Nazioni 2026','imgs/sport/seinazioni.jpg','Rugby · Live · Six Nations','Il torneo più antico del rugby internazionale.')"><img src="imgs/sport/seinazioni.jpg" alt="Sei Nazioni" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Sei Nazioni 2026</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Sei Nazioni 2026</div></div><span class="film-badge" style="background:red;color:#fff">🔴 Live</span></div>
+    <div class="film-card sport-card" data-genre="altro" onclick="openModal('Giro d\&#39;Italia','imgs/sport/giro-ditalia.jpg','Ciclismo · Live · UCI','La corsa rosa, 21 tappe attraverso le strade più belle d\&#39;Italia.')"><img src="imgs/sport/giro-ditalia.jpg" alt="Giro d'Italia" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Giro d'Italia</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Giro d'Italia</div></div><span class="film-badge new">New</span></div>
+    <div class="film-card sport-card" data-genre="altro" onclick="openModal('Boxe – Grandi Incontri','imgs/sport/boxing.jpg','Boxe · On demand','I più grandi match di boxe della stagione.')"><img src="imgs/sport/boxing.jpg" alt="Boxe" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Boxe – Grandi Incontri</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Boxe – Grandi Incontri</div></div><span class="film-badge hd">HD</span></div>
+    <div class="film-card sport-card" data-genre="altro calcio" onclick="openModal('Nazionale Italiana','imgs/sport/nazionaleitalia.jpg','Calcio · Nazionali · UEFA · FIFA','Tutte le partite della Nazionale azzurra.')"><img src="imgs/sport/nazionaleitalia.jpg" alt="Nazionale Italiana" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Nazionale Italiana</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Nazionale Italiana</div></div><span class="film-badge hd">4K</span></div>
+    <div class="film-card sport-card" data-genre="bodybuilding" onclick="openModal('Mr. Olympia 2026','imgs/sport/olympia.jpg','Bodybuilding · On Demand · IFBB Pro','La competizione più prestigiosa al mondo nel bodybuilding professionistico.')"><img src="imgs/sport/olympia.jpg" alt="Mr. Olympia" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Mr. Olympia 2026</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Mr. Olympia 2026</div></div><span class="film-badge new">New</span></div>
+    <div class="film-card sport-card" data-genre="bodybuilding" onclick="openModal('Arnold Classic 2026','imgs/sport/arnold-clasasic.webp','Bodybuilding · On Demand · IFBB','Il secondo evento più importante del bodybuilding mondiale.')"><img src="imgs/sport/arnold-clasasic.webp" alt="Arnold Classic" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Arnold Classic 2026</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Arnold Classic 2026</div></div><span class="film-badge hd">HD</span></div>
+    <div class="film-card sport-card" data-genre="bodybuilding" onclick="openModal('Europe Classic Championships','imgs/sport/europeclassicchampionships.jpg','Bodybuilding · Live · IFBB Europe','Il campionato europeo di bodybuilding classico.')"><img src="imgs/sport/europeclassicchampionships.jpg" alt="Europe Classic Championships" onerror="this.style.background='#1c1c28'"><div class="film-card-overlay"><div class="film-title">Europe Classic Championships</div></div><div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Europe Classic Championships</div></div><span class="film-badge" style="background:red;color:#fff">🔴 Live</span></div>
+  </div>
+</div><!-- end page-sport -->
+
+<!-- DOCUMENTARI PAGE -->
+<div id="page-documentari" class="page">
+  <div class="films-page">
+    <div class="films-hero">
+      <div class="films-hero-bg" style="background: radial-gradient(ellipse at 35% 50%, rgba(51,204,255,0.08) 0%, transparent 60%), radial-gradient(ellipse at 75% 25%, rgba(232,255,0,0.06) 0%, transparent 50%);"></div>
+      <div class="films-hero-content">
+        <div class="films-breadcrumb"><span onclick="showPage('home')">Home</span> › Documentari</div>
+        <h1 class="films-title">I nostri <em>Documentari</em></h1>
+        <p class="films-subtitle">Storie vere, persone straordinarie, il mondo da scoprire</p>
+      </div>
+    </div>
+
+    <div class="filter-bar">
+      <button class="filter-btn active" onclick="filterDoc(this,'all')">Tutti</button>
+      <button class="filter-btn" onclick="filterDoc(this,'storia')">Storia</button>
+      <button class="filter-btn" onclick="filterDoc(this,'natura')">Natura</button>
+      <button class="filter-btn" onclick="filterDoc(this,'scienza')">Scienza</button>
+      <button class="filter-btn" onclick="filterDoc(this,'cultura')">Cultura</button>
+      <button class="filter-btn" onclick="filterDoc(this,'sport')">Sport</button>
+      <button class="filter-btn" onclick="filterDoc(this,'società')">Società</button>
+    </div>
+
+    <div class="featured-film" onclick="openModal('Alfieri e Parini','imgs/doc/alfierieparini.png','2026 · 36 min · Gruppo 4B','Un viaggio nell\&#39;Italia settecentesca attraverso le vite di Vittorio Alfieri e Giuseppe Parini, due giganti della letteratura italiana che sfidarono il loro tempo con la penna e con il coraggio.')">
+      <img src="imgs/doc/alfierieparini.png" class="featured-film-img" alt="Alfieri e Parini" onerror="this.style.display='none'">
+      <div class="featured-film-overlay">
+        <div class="featured-film-info">
+          <span class="featured-tag">★ In evidenza</span>
+          <div class="featured-film-title">Alfieri e Parini</div>
+          <div class="featured-film-meta">
+            <span>2024</span><div class="meta-dot"></div>
+            <span>94 min</span><div class="meta-dot"></div>
+            <span>Gruppo 4B</span><div class="meta-dot"></div>
+            <span>Storia · Cultura</span>
+          </div>
+          <p class="featured-film-desc">Un viaggio nell'Italia settecentesca attraverso le vite di Vittorio Alfieri e Giuseppe Parini, due giganti della letteratura italiana che sfidarono il loro tempo con la penna e con il coraggio delle proprie idee.</p>
+          <div class="featured-btns">
+            <button class="btn-watch">▶ Guarda ora</button>
+            <button class="btn-more">+ Lista</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="films-section">
+      <div class="films-section-title">Tutti i Documentari</div>
+      <div class="films-grid" id="docGrid">
+
+        <!-- Alfieri e Parini -->
+        <div class="film-card" data-genre="storia cultura" onclick="openModal('Alfieri e Parini','imgs/doc/alfierieparini.png','2026 · 36 min · Gruppo 4B','Un viaggio nell\&#39;Italia settecentesca attraverso le vite di Vittorio Alfieri e Giuseppe Parini, due giganti della letteratura italiana.')">
+          <img src="imgs/doc/alfierieparini.png" alt="Alfieri e Parini" onerror="this.style.background='#1c1c28'">
+          <div class="film-card-overlay"><div class="film-title">Alfieri e Parini</div><div class="film-year">2026</div></div>
+          <div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Alfieri e Parini</div></div>
+          <span class="film-badge new">New</span>
+        </div>
+
+        <!-- Il Pianeta Terra — FIXED: pianetaterra.png -->
+        <div class="film-card" data-genre="natura scienza" onclick="openModal('Il Pianeta Terra','imgs/doc/pianetaterra.png','2006 · 11 episodi · BBC','Il documentario naturalistico per eccellenza. Undici episodi che mostrano la Terra in tutto il suo splendore, dai ghiacciai polari alle foreste pluviali tropicali.')">
+          <img src="imgs/doc/pianetaterra.png" alt="Il Pianeta Terra" onerror="this.style.background='#1c1c28'">
+          <div class="film-card-overlay"><div class="film-title">Il Pianeta Terra</div><div class="film-year">BBC · 2006</div></div>
+          <div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Il Pianeta Terra</div></div>
+          <span class="film-badge hd">4K</span>
+        </div>
+
+        <!-- Apollo — FIXED: apollo.webp (already correct) -->
+        <div class="film-card" data-genre="storia" onclick="openModal('Apollo: Le missioni lunari','imgs/doc/apollo.webp','2019 · 163 min · Todd Douglas Miller','Costruito interamente da filmati d\&#39;archivio e nastri audio originali della NASA, un epico ritratto del programma Apollo e della corsa verso la Luna.')">
+          <img src="imgs/doc/apollo.webp" alt="Apollo" onerror="this.style.background='#1c1c28'">
+          <div class="film-card-overlay"><div class="film-title">Apollo: Le missioni lunari</div><div class="film-year">2019</div></div>
+          <div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Apollo: Le missioni lunari</div></div>
+          <span class="film-badge">Storia</span>
+        </div>
+
+        <!-- The Social Dilemma — FIXED: thesocialdilemma.jpg -->
+        <div class="film-card" data-genre="società" onclick="openModal('The Social Dilemma','imgs/doc/thesocialdilemma.jpg','2020 · 94 min · Jeff Orlowski','Ex dipendenti di Google, Facebook e Twitter rivelano come i social media siano stati progettati per creare dipendenza e manipolare il comportamento umano.')">
+          <img src="imgs/doc/thesocialdilemma.jpg" alt="The Social Dilemma" onerror="this.style.background='#1c1c28'">
+          <div class="film-card-overlay"><div class="film-title">The Social Dilemma</div><div class="film-year">2020</div></div>
+          <div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">The Social Dilemma</div></div>
+          <span class="film-badge">Società</span>
+        </div>
+
+        <!-- Oceani — FIXED: oceani.jpg -->
+        <div class="film-card" data-genre="natura" onclick="openModal('Oceani','imgs/doc/oceani.jpg','2009 · 101 min · Jacques Cluzaud','Un viaggio spettacolare negli abissi del mare, tra creature mai viste e paesaggi subacquei mozzafiato. Uno dei documentari naturalistici più belli mai realizzati.')">
+          <img src="imgs/doc/oceani.jpg" alt="Oceani" onerror="this.style.background='#1c1c28'">
+          <div class="film-card-overlay"><div class="film-title">Oceani</div><div class="film-year">2009</div></div>
+          <div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Oceani</div></div>
+          <span class="film-badge hd">HD</span>
+        </div>
+
+        <!-- Il Cosmo di Carl Sagan — FIXED: cosmocarlsagana.jpg -->
+        <div class="film-card" data-genre="scienza" onclick="openModal('Il Cosmo di Carl Sagan','imgs/doc/cosmocarlsagana.jpg','1980 · 13 episodi · Carl Sagan','La serie che ha cambiato il modo di comunicare la scienza. Carl Sagan ci guida attraverso miliardi di anni di storia cosmica con poesia, rigore e meraviglia.')">
+          <img src="imgs/doc/cosmocarlsagana.jpg" alt="Il Cosmo di Carl Sagan" onerror="this.style.background='#1c1c28'">
+          <div class="film-card-overlay"><div class="film-title">Il Cosmo di Carl Sagan</div><div class="film-year">1980</div></div>
+          <div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Il Cosmo di Carl Sagan</div></div>
+          <span class="film-badge">Classico</span>
+        </div>
+
+        <!-- Leonardo da Vinci — FIXED: Leonardo_da_Vinci.jpg -->
+        <div class="film-card" data-genre="storia cultura" onclick="openModal('Leonardo da Vinci','imgs/doc/Leonardo_da_Vinci.jpg','2021 · 120 min · Ken Burns','Ken Burns racconta la vita straordinaria di Leonardo da Vinci: artista, scienziato, ingegnere e visionario che anticipò secoli di scoperte umane.')">
+          <img src="imgs/doc/Leonardo_da_Vinci.jpg" alt="Leonardo da Vinci" onerror="this.style.background='#1c1c28'">
+          <div class="film-card-overlay"><div class="film-title">Leonardo da Vinci</div><div class="film-year">2021</div></div>
+          <div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Leonardo da Vinci</div></div>
+          <span class="film-badge new">New</span>
+        </div>
+
+        <!-- The Last Dance — FIXED: The-Last-Dance.webp + onclick aggiunto -->
+        <div class="film-card" data-genre="sport" onclick="openModal('The Last Dance','imgs/doc/The-Last-Dance.webp','2020 · 10 episodi · ESPN','Il documentario definitivo su Michael Jordan e i Chicago Bulls degli anni 90. Dietro le quinte della dinastia che ha cambiato il basket mondiale.')">
+          <img src="imgs/doc/The-Last-Dance.webp" alt="The Last Dance" onerror="this.style.background='#1c1c28'">
+          <div class="film-card-overlay"><div class="film-title">The Last Dance</div><div class="film-year">2020</div></div>
+          <div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">The Last Dance</div></div>
+          <span class="film-badge hd">4K</span>
+        </div>
+
+        <!-- 13th — FIXED: 13th.jpg + onclick aggiunto -->
+        <div class="film-card" data-genre="società storia" onclick="openModal('13th','imgs/doc/13th.jpg','2016 · 100 min · Ava DuVernay','Un\&#39;analisi potente del sistema carcerario americano e del suo legame con la schiavitù. Un documento fondamentale per capire le disuguaglianze razziali negli Stati Uniti.')">
+          <img src="imgs/doc/13th.jpg" alt="13th" onerror="this.style.background='#1c1c28'">
+          <div class="film-card-overlay"><div class="film-title">13th</div><div class="film-year">2016</div></div>
+          <div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">13th</div></div>
+          <span class="film-badge">Società</span>
+        </div>
+
+        <!-- Viaggio nel corpo umano — FIXED: viaggio-corpo-umano-900x591.jpg -->
+        <div class="film-card" data-genre="natura scienza" onclick="openModal('Viaggio nel corpo umano','imgs/doc/viaggio-corpo-umano-900x591.jpg','2017 · 6 episodi · National Geographic','Un tour straordinario dentro il corpo umano. Dalle cellule cerebrali ai globuli rossi, la scienza al servizio della meraviglia, in 4K Ultra HD.')">
+          <img src="imgs/doc/viaggio-corpo-umano-900x591.jpg" alt="Viaggio nel corpo umano" onerror="this.style.background='#1c1c28'">
+          <div class="film-card-overlay"><div class="film-title">Viaggio nel corpo umano</div><div class="film-year">2017</div></div>
+          <div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Viaggio nel corpo umano</div></div>
+          <span class="film-badge hd">4K</span>
+        </div>
+
+        <!-- Roma Eterna — FIXED: romaaeterna.jpg + onclick aggiunto -->
+        <div class="film-card" data-genre="cultura storia" onclick="openModal('Roma Eterna','imgs/doc/romaaeterna.jpg','2023 · 3 episodi · RAI Documentari','Tre episodi che ripercorrono tremila anni di storia della Città Eterna. Dalle origini leggendarie all\&#39;Impero, fino ai giorni nostri, con ricostruzioni in CGI di altissima qualità.')">
+          <img src="imgs/doc/romaaeterna.jpg" alt="Roma Eterna" onerror="this.style.background='#1c1c28'">
+          <div class="film-card-overlay"><div class="film-title">Roma Eterna</div><div class="film-year">2023</div></div>
+          <div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Roma Eterna</div></div>
+          <span class="film-badge new">New</span>
+        </div>
+
+        <!-- Particle Fever — FIXED: particle-fever.webp + onclick aggiunto -->
+        <div class="film-card" data-genre="scienza" onclick="openModal('Particle Fever','imgs/doc/particle-fever.webp','2013 · 99 min · Mark Levinson','La straordinaria storia della scoperta del bosone di Higgs al CERN. Sei fisici ci accompagnano nell\&#39;avventura scientifica più grande del XXI secolo.')">
+          <img src="imgs/doc/particle-fever.webp" alt="Particle Fever" onerror="this.style.background='#1c1c28'">
+          <div class="film-card-overlay"><div class="film-title">Particle Fever</div><div class="film-year">2013</div></div>
+          <div class="film-card-hover"><div class="play-btn">▶</div><div class="film-card-hover-title">Particle Fever</div></div>
+          <span class="film-badge">Scienza</span>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div><!-- end page-documentari -->
+
+<!-- FAQ PAGE -->
+<div id="page-faq" class="page">
+  <div class="films-page">
+    <div class="films-hero">
+      <div class="films-hero-bg" style="background: radial-gradient(ellipse at 40% 50%, rgba(232,255,0,0.06) 0%, transparent 60%), radial-gradient(ellipse at 80% 30%, rgba(255,60,172,0.08) 0%, transparent 50%);"></div>
+      <div class="films-hero-content">
+        <div class="films-breadcrumb"><span onclick="showPage('home')">Home</span> › FAQ</div>
+        <h1 class="films-title">Domande <em>Frequenti</em></h1>
+        <p class="films-subtitle">Tutto quello che devi sapere su beforeTV</p>
+      </div>
+    </div>
+
+    <div style="max-width:820px; margin:0 auto; padding:0 48px 100px;">
+      <div style="position:relative; margin-bottom:40px;">
+        <input id="faqSearch" type="text" placeholder="Cerca una domanda..."
+          oninput="applyFaqFilters()"
+          style="width:100%; padding:16px 20px 16px 52px; background:var(--surface);
+                 border:1px solid rgba(255,255,255,0.1); border-radius:50px;
+                 color:var(--text); font-family:'DM Sans',sans-serif; font-size:1rem;
+                 outline:none; transition:border-color 0.2s;">
+        <span style="position:absolute;left:20px;top:50%;transform:translateY(-50%);font-size:1.1rem;opacity:0.5">🔍</span>
+      </div>
+
+      <div class="filter-bar" style="padding:0 0 32px;">
+        <button class="filter-btn active" onclick="filterFaqCat(this,'all')">Tutte</button>
+        <button class="filter-btn" onclick="filterFaqCat(this,'abbonamento')">Abbonamento</button>
+        <button class="filter-btn" onclick="filterFaqCat(this,'tecnico')">Tecnico</button>
+        <button class="filter-btn" onclick="filterFaqCat(this,'contenuti')">Contenuti</button>
+        <button class="filter-btn" onclick="filterFaqCat(this,'account')">Account</button>
+        <button class="filter-btn" onclick="filterFaqCat(this,'pagamento')">Pagamento</button>
+      </div>
+
+      <div id="faqList"></div>
+      <div id="faqEmpty" style="display:none;text-align:center;padding:60px 0;color:var(--text-muted);">
+        <div style="font-size:2.5rem;margin-bottom:16px">🤔</div>
+        <div style="font-size:1rem">Nessuna domanda trovata.<br>Prova con un termine diverso.</div>
+      </div>
+
+      <div style="margin-top:64px;background:var(--surface);border:1px solid rgba(232,255,0,0.15);border-radius:20px;padding:40px;text-align:center;">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:2rem;letter-spacing:1px;margin-bottom:8px;">Non hai trovato la risposta?</div>
+        <p style="color:var(--text-muted);font-size:0.95rem;margin-bottom:24px;">Il nostro team è disponibile 7 giorni su 7, dalle 8:00 alle 23:00.</p>
+        <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+          <a href="mailto:supporto@beforetv.it" class="btn-primary" style="font-size:0.9rem;">✉ Scrivici</a>
+          <a href="#" class="btn-secondary" style="font-size:0.9rem;">💬 Chat live</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- end page-faq -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div>
+      <div class="footer-logo">before<span>TV</span></div>
+      <p class="footer-desc">La piattaforma streaming che ti fa vedere i migliori contenuti prima di tutti gli altri.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Contenuti</h4>
+      <ul>
+        <li><a href="#" onclick="showPage('films');return false;">Film</a></li>
+        <li><a href="#" onclick="showPage('serie');return false;">Serie TV</a></li>
+        <li><a href="#" onclick="showPage('sport');return false;">Sport</a></li>
+        <li><a href="#" onclick="showPage('documentari');return false;">Documentari</a></li>
+        <li><a href="#">Originali</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Account</h4>
+      <ul>
+        <li><a href="#">Accedi</a></li>
+        <li><a href="#">Registrati</a></li>
+        <li><a href="#">Abbonamenti</a></li>
+        <li><a href="#">Dispositivi</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Supporto</h4>
+      <ul>
+        <li><a href="#" onclick="showPage('faq');return false;">FAQ</a></li>
+        <li><a href="#">Contatti</a></li>
+        <li><a href="#">Privacy</a></li>
+        <li><a href="#">Termini</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 beforeTV S.r.l. — Tutti i diritti riservati</span>
+    <span>Made in Italy 🇮🇹</span>
+  </div>
+</footer>
+
+<script>
+  // ─── NAVIGAZIONE ─────────────────────────────────────────────────────
+  function showPage(name) {
+    const current = document.querySelector('.page.active');
+    const next = document.getElementById('page-' + name);
+    if (!next || current === next) return;
+    if (current) {
+      current.style.cssText = 'position:absolute;top:0;left:0;right:0;z-index:1;animation:pageFadeOut 0.4s ease forwards';
+      setTimeout(() => { current.classList.remove('active'); current.style = ''; }, 400);
+    }
+    next.style.cssText = 'position:relative;z-index:2';
+    next.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'instant' });
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active-nav'));
+    const navEl = document.getElementById('nav-' + name);
+    if (navEl) navEl.classList.add('active-nav');
+  }
+
+  // ─── FILTRI ──────────────────────────────────────────────────────────
+  function filterSport(btn, genre) {
+    btn.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#sportGrid .film-card').forEach(card => {
+      card.style.display = (genre === 'all' || (card.dataset.genre||'').split(' ').includes(genre)) ? '' : 'none';
+    });
+  }
+  function filterSerie(btn, genre) {
+    btn.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#serieGrid .film-card').forEach(card => {
+      card.style.display = (genre === 'all' || (card.dataset.genre||'').split(' ').includes(genre)) ? '' : 'none';
+    });
+  }
+  function filterFilms(btn, genre) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.film-card').forEach(card => {
+      card.style.display = (genre === 'all' || (card.dataset.genre||'').split(' ').includes(genre)) ? '' : 'none';
+    });
+  }
+
+  // ─── MODAL ───────────────────────────────────────────────────────────
+  function openModal(title, img, meta, desc) {
+    document.getElementById('modalTitle').textContent = title;
+    document.getElementById('modalImg').src = img;
+    document.getElementById('modalDesc').textContent = desc;
+    document.getElementById('modalMeta').innerHTML = meta.split(' · ').map(m => `<span>${m}</span>`).join('<div style="width:4px;height:4px;background:var(--text-muted);border-radius:50%;flex-shrink:0"></div>');
+    document.getElementById('filmModal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+    const watchBtn = document.querySelector('#filmModal .btn-watch');
+    watchBtn.onclick = title === 'Alfieri e Parini' ? () => window.location.href = 'alfieri-parini-intro.html' : null;
+    
+  }
+  function closeModal() {
+    document.getElementById('filmModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('filmModal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  // ─── FAQ ─────────────────────────────────────────────────────────────
+  const FAQS = [
+    { cat:'contenuti', q:'Come vedo il documentario di Alfieri e Parini?', a:'Per guardare il documentario di Alfieri e Parini vai su Sezione Documentari, cerca il titolo "Alfieri e Parini" e clicca su Riproduci. Puoi trovarlo anche digitando il nome direttamente nella barra di ricerca. Il documentario è disponibile in alta definizione e, se hai un piano Total o Family, puoi scaricarlo per guardarlo offline in qualsiasi momento. Per la migliore esperienza ti consigliamo una connessione stabile da almeno 10 Mbps.' },
+    { cat:'abbonamento', q:'Quali piani di abbonamento sono disponibili?', a:'BeforeTV offre tre piani: Smart (€4,99/mese) per un singolo schermo in HD, Total (€9,99/mese) per 3 schermi in 4K con sport incluso, e Family (€14,99/mese) per 6 schermi con profili Kids separati. Tutti i piani sono senza pubblicità e si possono disdire in qualsiasi momento.' },
+    { cat:'abbonamento', q:'Posso provare BeforeTV gratuitamente?', a:'Sì! Offriamo 14 giorni di prova gratuita per tutti i nuovi iscritti. Non ti viene addebitato nulla durante il periodo di prova e puoi annullare in qualsiasi momento prima della scadenza senza alcun costo.' },
+    { cat:'abbonamento', q:'Come faccio a cambiare o cancellare il mio abbonamento?', a:'Puoi modificare o cancellare il tuo abbonamento in qualsiasi momento dalla sezione Account > Abbonamento. La cancellazione è immediata e avrai accesso al servizio fino alla fine del periodo già pagato. Non ci sono penali o costi di uscita.' },
+    { cat:'pagamento', q:'Quali metodi di pagamento accettate?', a:'Accettiamo carte di credito e debito (Visa, Mastercard, American Express), PayPal, Apple Pay, Google Pay e addebito su conto corrente tramite SEPA. Tutti i pagamenti sono gestiti in modo sicuro tramite crittografia SSL.' },
+    { cat:'pagamento', q:'Quando viene addebitato il rinnovo?', a:'Il rinnovo viene addebitato automaticamente ogni mese nella stessa data di attivazione. Ricevi una notifica via email 3 giorni prima di ogni rinnovo. Puoi visualizzare la data del prossimo addebito nella sezione Account > Fatturazione.' },
+    { cat:'pagamento', q:'Posso richiedere un rimborso?', a:'Se hai appena rinnovato l\'abbonamento e non hai ancora usato il servizio, puoi richiedere un rimborso entro 48 ore contattando il supporto. I rimborsi parziali per utilizzo parziale del mese non sono previsti, ma puoi sempre disdire per non ricevere ulteriori addebiti.' },
+    { cat:'tecnico', q:'Su quali dispositivi posso guardare BeforeTV?', a:'BeforeTV è disponibile su Smart TV (Samsung, LG, Sony, Philips), smartphone e tablet iOS e Android, PC e Mac tramite browser, Apple TV, Google Chromecast, Amazon Fire TV e console PlayStation e Xbox.' },
+    { cat:'tecnico', q:'Qual è la velocità internet necessaria per guardare in 4K?', a:'Per lo streaming in 4K Ultra HD consigliamo almeno 25 Mbps di connessione stabile. Per l\'HD 1080p sono sufficienti 10 Mbps, mentre per l\'SD servono almeno 3 Mbps. BeforeTV adatta automaticamente la qualità video in base alla tua connessione.' },
+    { cat:'tecnico', q:'Posso guardare BeforeTV offline?', a:'Sì, con i piani Total e Family puoi scaricare film e serie sull\'app mobile (iOS e Android) per guardarli senza connessione. I contenuti scaricati restano disponibili per 30 giorni e per 48 ore dalla prima visione. Il piano Smart non include il download offline.' },
+    { cat:'tecnico', q:'Il servizio funziona all\'estero?', a:'BeforeTV è disponibile in tutti i paesi dell\'Unione Europea senza restrizioni grazie al Regolamento UE sulla portabilità. Al di fuori dell\'UE alcune restrizioni sui diritti potrebbero limitare il catalogo disponibile.' },
+    { cat:'contenuti', q:'Ogni quanto viene aggiornato il catalogo?', a:'Il catalogo viene aggiornato settimanalmente con nuovi film, serie ed episodi. I contenuti sport live vengono aggiornati in tempo reale con il calendario delle competizioni. Puoi seguire le novità nella sezione "Nuovi arrivi" in homepage.' },
+    { cat:'contenuti', q:'I contenuti sport sono disponibili in replay?', a:'Sì, tutti gli eventi sport sono disponibili in replay per 30 giorni dopo la messa in onda. Puoi guardare le partite di calcio, le gare di MotoGP, i match di tennis e tutti gli altri eventi che hai perso direttamente dalla sezione Sport.' },
+    { cat:'contenuti', q:'I film e le serie sono in italiano?', a:'Tutti i contenuti sono disponibili in italiano. Per film e serie stranieri è disponibile sia il doppiaggio italiano che la versione originale con sottotitoli in italiano. Puoi cambiare la lingua audio e i sottotitoli direttamente dal player.' },
+    { cat:'contenuti', q:'Ci sono contenuti per bambini?', a:'Con il piano Family puoi creare profili Kids protetti da PIN, con un catalogo dedicato ai più piccoli. Il controllo genitori impedisce l\'accesso a contenuti non appropriati. I profili Kids non hanno accesso a film o serie con classificazione superiore a PG.' },
+    { cat:'account', q:'Quante persone possono usare lo stesso account contemporaneamente?', a:'Dipende dal piano scelto: Smart consente 1 schermo simultaneo, Total ne consente 3 e Family fino a 6. Se si supera il limite, il nuovo accesso interrompe automaticamente la visione sul dispositivo meno recente.' },
+    { cat:'account', q:'Come posso resettare la mia password?', a:'Dalla pagina di login clicca su "Password dimenticata?" e inserisci l\'email del tuo account. Riceverai un link per reimpostare la password entro pochi minuti. Se non ricevi l\'email, controlla la cartella spam o contatta il supporto.' },
+    { cat:'account', q:'Posso avere più profili sullo stesso account?', a:'Sì, puoi creare fino a 5 profili personali sullo stesso account (6 con il piano Family). Ogni profilo ha la propria lista, cronologia e preferenze. Per creare un nuovo profilo vai su Account > Gestisci profili.' },
+  ];
+
+  let _faqCat = 'all';
+
+  function renderFaqs(list) {
+    const container = document.getElementById('faqList');
+    const empty     = document.getElementById('faqEmpty');
+    if (!container) return;
+    if (list.length === 0) { container.innerHTML = ''; empty.style.display = 'block'; return; }
+    empty.style.display = 'none';
+    container.innerHTML = list.map((f, i) => `
+      <div class="faq-item" id="faq-${i}">
+        <div class="faq-question" onclick="toggleFaq(${i})">
+          <span class="faq-question-text">${f.q}</span>
+          <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+            <span class="faq-cat-badge">${f.cat}</span>
+            <span class="faq-arrow">▾</span>
+          </div>
+        </div>
+        <div class="faq-answer">${f.a}</div>
+      </div>`).join('');
+  }
+
+  function toggleFaq(i) {
+    const el = document.getElementById('faq-' + i);
+    if (!el) return;
+    const isOpen = el.classList.contains('open');
+    document.querySelectorAll('.faq-item.open').forEach(x => x.classList.remove('open'));
+    if (!isOpen) el.classList.add('open');
+  }
+
+  function filterFaqCat(btn, cat) {
+    document.querySelectorAll('#page-faq .filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    _faqCat = cat;
+    applyFaqFilters();
+  }
+
+  function filterDoc(btn, genre) {
+    btn.closest('.filter-bar').querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('#docGrid .film-card').forEach(card => {
+      card.style.display = (genre === 'all' || (card.dataset.genre||'').split(' ').includes(genre)) ? '' : 'none';
+    });
+  }
+
+  function applyFaqFilters() {
+    const q = (document.getElementById('faqSearch')?.value || '').toLowerCase().trim();
+    const filtered = FAQS.filter(f => {
+      const matchCat   = _faqCat === 'all' || f.cat === _faqCat;
+      const matchQuery = !q || f.q.toLowerCase().includes(q) || f.a.toLowerCase().includes(q);
+      return matchCat && matchQuery;
+    });
+    renderFaqs(filtered);
+  }
+
+  renderFaqs(FAQS);
+
+  // ─── PALINSESTO SPORT ────────────────────────────────────────────────
+  const SCHEDULE = [
+    [0,  2,  'NBA Highlight Night',        'Basket',      'NBA TV',        '🏀', 'imgs/sport/nbanighthigh.jpg'],
+    [1,  3,  'WWE Raw Replay',             'Wrestling',   'USA Network',   '💪', 'imgs/sport/wwereplayraw.jpg'],
+    [2,  4,  'NBA West Conference Game',   'Basket',      'NBA TV',        '🏀', 'imgs/sport/nba.png'],
+    [4,  6,  'Boxe: Fight Night',          'Boxe',        'DAZN',          '🥊', 'imgs/sport/boxing.jpg'],
+    [5,  7,  'MotoGP Free Practice',       'Motori',      'Sky Sport',     '🏎', 'imgs/sport/motogp.jpg'],
+    [6,  8,  'F1 Press Conference',        'Motori',      'Sky Sport F1',  '🏁', 'imgs/sport/formula1.jpg'],
+    [7,  9,  'Serie A Morning Show',       'Calcio',      'DAZN',          '⚽', 'imgs/sport/seriea.jpg'],
+    [8,  10, 'Tennis ATP Preview',         'Tennis',      'SuperTennis',   '🎾', 'imgs/sport/rolandgarros.jpg'],
+    [9,  11, 'Giro d\'Italia – Tappa 5',  'Ciclismo',    'RAI Sport',     '🚴', 'imgs/sport/giro-ditalia.jpg'],
+    [10, 12, 'Champions League Preview',   'Calcio',      'Mediaset',      '⚽', 'imgs/sport/championleague.webp'],
+    [11, 13, 'Sei Nazioni: ITA vs FRA',   'Rugby',       'DAZN',          '🏉', 'imgs/sport/seinazioni.jpg'],
+    [12, 14, 'Eurolega Basket',            'Basket',      'Eurosport',     '🏀', 'imgs/sport/basketeuroleague.jpg'],
+    [13, 15, 'MotoGP Qualifiche Live',     'Motori',      'Sky Sport',     '🏎', 'imgs/sport/motogp.jpg'],
+    [14, 16, 'Serie A – Roma vs Napoli',  'Calcio',      'DAZN',          '⚽', 'imgs/sport/seriea.jpg'],
+    [15, 17, 'Roland Garros – Q2',        'Tennis',      'Eurosport',     '🎾', 'imgs/sport/rolandgarros.jpg'],
+    [16, 18, 'NBA Playoffs Gara 3',       'Basket',      'Sky Sport NBA', '🏀', 'imgs/sport/nba.png'],
+    [17, 19, 'Coppa Italia Semifinale',   'Calcio',      'Rai 1',         '⚽', 'imgs/sport/coppaitalia.jpg'],
+    [18, 20, 'F1 GP – Qualifiche',        'Motori',      'Sky Sport F1',  '🏁', 'imgs/sport/formula1.jpg'],
+    [19, 21, 'Champions UCL Gara Sera',   'Calcio',      'DAZN',          '⚽', 'imgs/sport/championleague.webp'],
+    [20, 22, 'Arnold Classic – Finals',   'Bodybuilding','IFBB TV',        '💪', 'imgs/sport/arnold-clasasic.webp'],
+    [21, 23, 'Premier League – Chelsea',  'Calcio',      'Sky Sport PL',  '⚽', 'imgs/sport/premierleague.jpeg'],
+    [22, 24, 'WWE SmackDown Live',        'Wrestling',   'Fox Sports',    '💪', 'imgs/sport/wwesmackdown.webp'],
+    [23, 1,  'Serie A Night Highlights',  'Calcio',      'DAZN',          '⚽', 'imgs/sport/seriea.jpg'],
+  ];
+
+  function buildLiveSchedule() {
+    const now = new Date();
+    const totalMin = now.getHours() * 60 + now.getMinutes();
+    function slotActive(s) { const start=s[0]*60, end=s[1]===0?1440:(s[1]<s[0]?(s[1]+24)*60:s[1]*60); let cur=totalMin; if(s[1]<s[0]&&cur<s[0]*60)cur+=1440; return cur>=start&&cur<end; }
+    function minUntil(s) { let d=s[0]*60-totalMin; if(d<0)d+=1440; return d; }
+    function fmtTime(h) { return String(h%24).padStart(2,'0')+':00'; }
+    function fmtRemaining(s) { const end=s[1]===0?1440:s[1]*60; let r=end-totalMin; if(r<0)r+=1440; const hh=Math.floor(r/60),mm=r%60; return hh>0?`ancora ${hh}h ${mm}m`:`ancora ${mm}m`; }
+
+    const live = SCHEDULE.filter(s => slotActive(s));
+    const upcoming = SCHEDULE.filter(s => !slotActive(s)).sort((a,b)=>minUntil(a)-minUntil(b)).slice(0,6);
+
+    const liveBar = document.getElementById('liveNowBar');
+    if (!liveBar) return;
+    liveBar.innerHTML = live.length === 0
+      ? `<div style="color:var(--text-muted);font-size:0.85rem;padding:8px 0">Nessun evento live in questo momento.</div>`
+      : live.map(s => `<div class="live-event-card" onclick="openModal('${s[2].replace(/&#39;/g,"\\&#39;")}','${s[6]}','${s[4]} · Live · ${s[3]}','${s[5]} ${s[2]} in diretta su ${s[4]}')"><img src="${s[6]}" alt="${s[2]}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.45;"><div class="live-card-overlay"><div class="live-dot">LIVE ORA</div><div class="live-event-title">${s[5]} ${s[2]}</div><div class="live-event-meta"><span>${s[3]} · ${s[4]}</span><span class="live-event-time">${fmtRemaining(s)}</span></div></div></div>`).join('');
+
+    const strip = document.getElementById('scheduleStrip');
+    if (!strip) return;
+    strip.innerHTML = upcoming.map((s,i) => { const diff=minUntil(s),ds=diff<60?`tra ${diff}m`:`tra ${Math.floor(diff/60)}h ${diff%60?diff%60+'m':''}`; return `<div class="schedule-slot${i===0?' next':''}" onclick="openModal('${s[2].replace(/&#39;/g,"\\&#39;")}','${s[6]}','${s[4]} · ${s[3]}','${s[5]} ${s[2]} inizia alle ${fmtTime(s[0])} su ${s[4]}')"><img src="${s[6]}" alt="${s[2]}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0.5;"><div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(10,10,15,1) 0%,rgba(10,10,15,0.3) 100%);"></div><div style="position:relative;z-index:1;"><div class="schedule-time">${fmtTime(s[0])} – ${fmtTime(s[1])}</div><div class="schedule-name">${s[5]} ${s[2]}</div><div class="schedule-sport">${s[3]} · ${s[4]} · ${ds}</div></div></div>`; }).join('');
+  }
+
+  buildLiveSchedule();
+  setInterval(buildLiveSchedule, 60000);
+</script>
+</body>
+</html>
